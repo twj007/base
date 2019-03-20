@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>上传</title>
+    <!--<link href="http://vjs.zencdn.net/5.0.2/video-js.css" rel="stylesheet">-->
+    <!--<script src="http://vjs.zencdn.net/ie8/1.1.0/videojs-ie8.min.js"></script>-->
+    <!--<script src="http://vjs.zencdn.net/5.0.2/video.js"></script>-->
+</head>
+<body>
+
+<form th:action="@{upload}" method="post" enctype="multipart/form-data">
+    <input type="file" id="uploads" name="uploads" multiple data-show-preview="false">
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>
