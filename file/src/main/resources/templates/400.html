@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MIA | 404 Error</title>
+
+    <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/static/font-awesome/css/font-awesome.css}" rel="stylesheet">
+
+    <link th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link th:href="@{/static/css/style.css}" rel="stylesheet">
+    <!-- Mainly scripts -->
+    <script th:src="@{/static/js/jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.min.js}"></script>
+
+</head>
+
+<body class="gray-bg">
+
+
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>404</h1>
+        <h3 class="font-bold">页面不存在</h3>
+
+        <div class="error-desc">
+            抱歉,您所搜寻的页面不存在！
+            <form class="form-inline m-t" role="form">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="搜寻内容">
+                </div>
+                <button type="submit" id="search" class="btn btn-primary">搜索</button>
+            </form>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

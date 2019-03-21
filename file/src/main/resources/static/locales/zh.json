@@ -1,0 +1,43 @@
+{
+  "app":{
+    "name": "INSPINIA 2.4"
+  },
+  "nav":{
+    "dashboard": "Dashboards",
+    "graphs": "图表",
+    "mailbox": "Mailbox",
+    "widgets": "Widgets",
+    "metrics": "Metrics",
+    "forms": "表单",
+    "appviews": "App views",
+    "otherpages": "其他页面",
+    "uielements": "UI元素",
+    "miscellaneous": "Miscellaneous",
+    "gridoptions": "Grid options",
+    "tables": "表格",
+    "commerce": "E-commerce",
+    "gallery": "画廊",
+    "menulevels": "多级菜单",
+    "animations": "动画",
+    "landing": "Landing page",
+    "layouts": "Layouts",
+    "package": "Packages"
+  },
+  "body":{
+    "welcome": "Welcome Amelia"
+
+  },
+  "topnav":{
+
+    "messageinfo": "You have 42 messages and 6 notifications.",
+    "search": "Search for something...",
+    "logout": "Log out",
+    "welcometext": "Welcome to INSPINIA+ Admin Theme.",
+    "language": "Language"
+  },
+  "demo":{
+    "text1": "Internationalization (sometimes shortened to \"I18N , meaning \"I - eighteen letters -N\") is the process of planning and implementing products and services so that they can easily be adapted to specific local languages and cultures, a process called localization . The internationalization process is sometimes called translation or localization enablement ."
+  }
+
+
+}

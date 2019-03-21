@@ -11,6 +11,7 @@
     <modules>
         <module>web</module>
         <module>file</module>
+        <module>front</module>
     </modules>
 
     <!-- 第一步：添加Springboot的parent -->

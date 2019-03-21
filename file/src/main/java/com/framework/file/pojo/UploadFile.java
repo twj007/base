@@ -2,7 +2,6 @@ package com.framework.file.pojo;
 
 import lombok.*;
 
-import java.util.Date;
 
 @Getter
 @Setter
@@ -20,4 +19,8 @@ public class UploadFile {
     private String fileNewName;
 
     private String createDate;
+
+    private String subfolder;
+
+
 }

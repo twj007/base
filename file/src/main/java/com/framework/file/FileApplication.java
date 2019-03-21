@@ -1,14 +1,39 @@
 package com.framework.file;
 
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+
+import javax.sql.DataSource;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.framework.file.dao")
-public class FileApplication {
+@EnableTransactionManagement
+public class FileApplication extends WebMvcConfigurationSupport{
+
+    TransactionTemplate transactionTemplate;
 
     public static void main(String[] args) {
         SpringApplication.run(FileApplication.class, args);
+    }
+
+    @Autowired
+    private void transactionTemplate(DataSource dataSource) {
+        transactionTemplate = new TransactionTemplate(new DataSourceTransactionManager(dataSource));
+    }
+
+
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**").addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX+"/static/");
+        super.addResourceHandlers(registry);
+
     }
 }

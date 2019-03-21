@@ -1,9 +1,13 @@
 server:
-  port: 8080
+  port: 8081
+
+app:
+  host: 127.0.0.1/
 
 file:
   upload:
     path: C://basis/
+
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/user?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
@@ -46,7 +50,7 @@ spring:
         #deny:
       web-stat-filter:
         # 添加过滤规则
-        url-pattern: /*
+        url-pattern: /**
         # 忽略过滤格式
         exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
       use-local-session-state: false
@@ -56,8 +60,10 @@ spring:
   application:
     name: web
 # 静态资源及模板引擎配置
+#  resources:
+#    static-locations: ["classpath:/templates/**","classpath:/resources/**","classpath:/static/**"]
   resources:
-    static-locations: ["/templates/","/resources/","/static/"]
+    static-locations: /static/**
   thymeleaf:
     mode: HTML
     encoding: UTF-8
@@ -65,8 +71,8 @@ spring:
       content-type: text/html
     suffix: .html
     cache: false
-    mvc:
-      static-path-pattern: /**
+#    mvc:
+#      static-path-pattern: /**
 
 #  profiles:
 #    active: dev
@@ -81,3 +87,4 @@ mybatis:
   type-aliases-package: com.framework.file.pojo
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
