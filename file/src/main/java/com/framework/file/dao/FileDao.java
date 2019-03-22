@@ -1,6 +1,6 @@
 package com.framework.file.dao;
 
-import com.framework.file.pojo.UploadFile;
+import com.framework.file.pojo.file.UploadFile;
 
 import java.util.List;
 

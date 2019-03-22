@@ -1,6 +1,6 @@
 package com.framework.file.controller;
 
-import com.framework.file.pojo.UploadFile;
+import com.framework.file.pojo.file.UploadFile;
 import com.framework.file.service.FileService;
 import com.framework.file.service.TransactionalService;
 import com.framework.file.util.LOGLEVEL;
@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
 import java.io.*;
 import java.util.List;
 
@@ -24,13 +23,6 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-
-    @GetMapping("/")
-    public ModelAndView index(){
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/index");
-        return mav;
-    }
 
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -1,6 +1,7 @@
-package com.framework.file.pojo;
+package com.framework.file.pojo.file;
 
 import lombok.*;
+import org.apache.ibatis.type.Alias;
 
 
 @Getter
@@ -8,6 +9,7 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+//@Alias("UploadFile")
 public class UploadFile {
 
     private Long fileId;

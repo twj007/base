@@ -84,7 +84,7 @@ spring:
   #mybatis配置
 mybatis:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
-  type-aliases-package: com.framework.file.pojo
+  type-aliases-package: com.framework.file.pojo.file,com.framework.file.pojo.user
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true

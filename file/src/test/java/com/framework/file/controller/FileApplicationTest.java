@@ -1,6 +1,8 @@
 package com.framework.file.controller;
 
 import com.framework.file.FileApplication;
+import com.framework.file.pojo.user.User;
+import com.framework.file.service.user.UserService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -81,6 +83,23 @@ public class FileApplicationTest {
                 .andReturn().getResponse().getContentAsString();
         Assert.assertEquals("上传成功", result);
 
+    }
+
+
+    @Autowired
+    UserService userService;
+
+    @Test
+    public void testUserService(){
+        User u = new User();
+        u.setUsername("test");
+        Assert.assertEquals(Long.valueOf(1), userService.checkUserExists(u));
+        u.setPassword("ok");
+        Assert.assertNotEquals(null, userService.login(u));
+        Assert.assertNotEquals(null, userService.getContactList(u));
+        u.setEmail("test@qq.com");
+        u.setId(Long.valueOf(7));
+        Assert.assertEquals(true, userService.updateUser(u));
     }
 }
 

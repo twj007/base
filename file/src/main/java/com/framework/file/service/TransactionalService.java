@@ -1,7 +1,7 @@
 package com.framework.file.service;
 
 import com.framework.file.dao.FileDao;
-import com.framework.file.pojo.UploadFile;
+import com.framework.file.pojo.file.UploadFile;
 import com.framework.file.util.DateFormatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

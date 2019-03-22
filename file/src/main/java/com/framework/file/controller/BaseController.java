@@ -1,7 +1,9 @@
 package com.framework.file.controller;
 
+import com.framework.file.pojo.user.User;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,5 +25,18 @@ public class BaseController implements ErrorController {
     @Override
     public String getErrorPath() {
         return "/error";
+    }
+
+    @GetMapping("/")
+    public ModelAndView index(HttpServletRequest request, ModelAndView mav){
+        mav = new ModelAndView();
+        User user = (User) request.getSession().getAttribute("user");
+        if( user == null){
+            mav.setViewName("login");
+        }else{
+            mav.setViewName("index");
+            mav.addObject(user);
+        }
+        return mav;
     }
 }
