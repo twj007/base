@@ -5,10 +5,12 @@ import com.framework.file.pojo.user.User;
 import com.framework.file.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import sun.security.util.Password;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +24,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @GetMapping("/checkUserExists")
@@ -86,6 +91,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity register(User user, HttpServletRequest request){
         boolean flag = false;
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         switch (OperationType.OPERATIONTYPE.valueOf(user.getOperationType())){
             case GET:
                 break;

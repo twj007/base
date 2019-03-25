@@ -32,7 +32,7 @@ public class BaseController implements ErrorController {
         mav = new ModelAndView();
         User user = (User) request.getSession().getAttribute("user");
         if( user == null){
-            mav.setViewName("login");
+            mav.setViewName("/user/login");
         }else{
             mav.setViewName("index");
             mav.addObject(user);

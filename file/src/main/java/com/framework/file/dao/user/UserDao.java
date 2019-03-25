@@ -18,4 +18,6 @@ public interface UserDao {
     Long deleteUser();
 
     List<User> getContactList(User u);
+
+    User authUser(String s);
 }
