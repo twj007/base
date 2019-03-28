@@ -64,6 +64,8 @@ spring:
 #    static-locations: ["classpath:/templates/**","classpath:/resources/**","classpath:/static/**"]
   resources:
     static-locations: /static/**
+  mvc:
+    static-path-pattern: /static/**
   thymeleaf:
     mode: HTML
     encoding: UTF-8
@@ -71,9 +73,6 @@ spring:
       content-type: text/html
     suffix: .html
     cache: false
-#    mvc:
-#      static-path-pattern: /**
-
 #  profiles:
 #    active: dev
 
@@ -82,6 +81,7 @@ spring:
 # mybatis-config
 
   #mybatis配置
+
 mybatis:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
   type-aliases-package: com.framework.file.pojo.file,com.framework.file.pojo.user

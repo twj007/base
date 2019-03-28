@@ -1,6 +1,7 @@
 package com.framework.file.controller.User;
 
 import com.framework.file.pojo.OperationType;
+import com.framework.file.pojo.ResultBody;
 import com.framework.file.pojo.user.User;
 import com.framework.file.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import sun.security.util.Password;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
+import javax.xml.transform.Result;
 import java.util.List;
 
 @Controller
@@ -33,22 +35,25 @@ public class UserController {
     public ResponseEntity checkUserExists(User user){
         Long num = userService.checkUserExists(user);
         if(num > 0){
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok(ResultBody.success("", true));
         }else{
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok(ResultBody.success("", false));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(User user, HttpServletRequest request,HttpServletResponse response){
+    public ResponseEntity login(@Validated User user, BindingResult bindingResult, HttpServletRequest request,HttpServletResponse response){
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.ok(ResultBody.fail("参数验证失败", bindingResult.getAllErrors()));
+        }
         User u = userService.login(user);
         if(u == null){
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok(ResultBody.fail("用户名或密码错误", null));
         }else{
             request.getSession().setAttribute("user", u);
             Cookie c = new Cookie("token", "一个加密的token用来鉴权");
             response.addCookie(c);
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok(ResultBody.success("success", null));
         }
     }
 
@@ -64,9 +69,9 @@ public class UserController {
         String code = userService.sendValidEmail(user);
         if(!StringUtils.isEmpty(code)){
             request.getSession().setAttribute("code", code);
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok(ResultBody.success("", true));
         }else{
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok(ResultBody.fail("", false));
         }
     }
 
@@ -74,11 +79,11 @@ public class UserController {
     public ResponseEntity validCode(String code, HttpServletRequest request){
         String signCode = (String) request.getSession().getAttribute("code");
         if(StringUtils.isEmpty(signCode) || StringUtils.isEmpty(code)){
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok(ResultBody.fail("验证失败", false));
         }else if(!StringUtils.isEmpty(signCode) && signCode.equals(code)){
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok(ResultBody.success("验证成功", true));
         }else{
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok(ResultBody.fail("验证失败", false));
         }
     }
 
@@ -89,8 +94,15 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity register(User user, HttpServletRequest request){
+    public ResponseEntity register(@Validated User user, BindingResult bindResult, HttpServletRequest request){
         boolean flag = false;
+        if(bindResult.hasErrors()){
+//            List<ObjectError> errors = bindResult.getAllErrors();
+//            for(ObjectError error : errors){
+//                error.getDefaultMessage();
+//            }
+            return ResponseEntity.ok(bindResult.getAllErrors());
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         switch (OperationType.OPERATIONTYPE.valueOf(user.getOperationType())){
             case GET:
@@ -108,7 +120,7 @@ public class UserController {
             default:
                 break;
         }
-        return ResponseEntity.ok(flag);
+        return ResponseEntity.ok(ResultBody.success("", flag));
 
     }
 

@@ -2,6 +2,7 @@ package com.framework.file.config;
 
 import com.framework.file.component.GoAuthenticationFailureHandler;
 import com.framework.file.component.GoAuthenticationSuccessHandler;
+import com.framework.file.component.GoLogoutSuccessHandler;
 import com.framework.file.dao.user.UserDao;
 import com.framework.file.pojo.user.User;
 import com.framework.file.pojo.user.UserDetail;
@@ -28,28 +29,33 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(
             "/",
+                        "/webjars/**",
                         "/index",
                         "/user/toRegister",
                         "/user/register",
+                        "/user/login",
                         "/error",
                         "/user/checkUserExists",
                         "/static/**",
-                        "/templates/**").permitAll()
-                .anyRequest().authenticated()
+                        "/templates/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/user/login")
-                .successHandler(new GoAuthenticationSuccessHandler())
-                .failureHandler(new GoAuthenticationFailureHandler())
-                .permitAll()
+                    .loginPage("/user/login")
+                    .successHandler(new GoAuthenticationSuccessHandler())
+                    .failureHandler(new GoAuthenticationFailureHandler())
+                    .permitAll()
                 .and()
                 .logout()
-                .logoutUrl("/user/logout")
-                .invalidateHttpSession(true)
-                .permitAll()
+                    .logoutUrl("/user/logout")
+                    .invalidateHttpSession(true)
+                    .logoutSuccessHandler(new GoLogoutSuccessHandler())
+                    .permitAll()
                 .and()
                 .csrf()
-                .disable();
+                    .disable();
 
     }
 

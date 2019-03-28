@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @SpringBootApplication
 @MapperScan(basePackages = "com.framework.file.dao")
 @EnableTransactionManagement
-public class FileApplication extends WebMvcConfigurationSupport{
+public class FileApplication {
 
     TransactionTemplate transactionTemplate;
 
@@ -30,10 +30,5 @@ public class FileApplication extends WebMvcConfigurationSupport{
     }
 
 
-    @Override
-    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX+"/static/");
-        super.addResourceHandlers(registry);
 
-    }
 }

@@ -8,16 +8,13 @@
 
     <title>MIA | 登陆</title>
 
-    <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/static/font-awesome/css/font-awesome.css}" rel="stylesheet">
 
-    <link th:href="@{/static/css/animate.css}" rel="stylesheet">
-    <link th:href="@{/static/css/style.css}" rel="stylesheet">
 
 </head>
 
 <body class="gray-bg">
-
+<div th:include="include::head"></div>
+<script th:src="@{/static/js/user/login.js}"></script>
 <div class="loginColumns animated fadeInDown">
     <div class="row">
 
@@ -70,6 +67,8 @@
     </div>
 </div>
 
+<div th:include="include::footer"></div>
+<script th:src="@{/static/js/user/login.js}"></script>
 </body>
 
 </html>
