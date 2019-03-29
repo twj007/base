@@ -18,7 +18,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Result;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -32,13 +34,16 @@ public class UserController {
 
 
     @GetMapping("/checkUserExists")
-    public ResponseEntity checkUserExists(User user){
+    @ResponseBody
+    public Map checkUserExists(User user){
         Long num = userService.checkUserExists(user);
+        Map valid = new HashMap();
         if(num > 0){
-            return ResponseEntity.ok(ResultBody.success("", true));
+            valid.put("valid", true);
         }else{
-            return ResponseEntity.ok(ResultBody.success("", false));
+            valid.put("valid", false);
         }
+        return valid;
     }
 
     @PostMapping("/login")
@@ -46,6 +51,7 @@ public class UserController {
         if(bindingResult.hasErrors()){
             return ResponseEntity.ok(ResultBody.fail("参数验证失败", bindingResult.getAllErrors()));
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User u = userService.login(user);
         if(u == null){
             return ResponseEntity.ok(ResultBody.fail("用户名或密码错误", null));

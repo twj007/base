@@ -5,7 +5,15 @@ import com.framework.file.service.FileService;
 import com.framework.file.service.TransactionalService;
 import com.framework.file.util.LOGLEVEL;
 import com.framework.file.util.LoggerUtil;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.region.Region;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +31,12 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+
+
+    @GetMapping("/toUpload")
+    public ModelAndView toUpload(){
+        return new ModelAndView("upload");
+    }
 
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

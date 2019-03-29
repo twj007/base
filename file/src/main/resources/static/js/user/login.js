@@ -21,7 +21,7 @@ $(function(){
                         name : 'username',
                         url : 'user/checkUserExists',
                         message : "该用户不存在",
-                        type : 'post'
+                        type : 'get'
                     }
                 }
             },
@@ -72,23 +72,26 @@ $(function(){
     }).on('success.form.bv', function(e){
         e.preventDefault();
         $.post({
-            url: ctx + "/user/login",
-            method: 'post',
+            url: "/user/login",
             data: {
                 username: $("#username").val(),
                 password: $("#password").val()
             },
             success: function(data){
+                console.log(ctx);
                 if(data.code == 500){
                     console.log("登陆失败");
                     return;
+                }else if(data.code == 200){
+                    console.log(data.message);
+                    window.location.href = ctx;
                 }else if(data.retCode == 200){
                     console.info("登陆成功");
+                    window.location.href = ctx;
                 }else{
                     console.log(data.message);
                     return;
                 }
-                window.location.href = ctx;
             }
         });
     });

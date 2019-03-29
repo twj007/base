@@ -25,12 +25,12 @@ public class User extends OperationType {
     @NotBlank(message = "密码不为空")
     private String password;
 
-    @NotBlank(message = "邮箱不能为空")
-    @Pattern(regexp = "/", message = "格式不正确")
+//    @NotBlank(message = "邮箱不能为空")
+//    @Pattern(regexp = "/", message = "格式不正确")
     private String email;
 
-    @NotNull(message = "年龄有效范围在之间")
-    @Min(value = 18, message = "年龄不小于{value}岁")
+//    @NotNull(message = "年龄有效范围在之间")
+//    @Min(value = 18, message = "年龄不小于{value}岁")
     private int age;
 
     private String mobile;

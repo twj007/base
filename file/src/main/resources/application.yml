@@ -7,6 +7,14 @@ app:
 file:
   upload:
     path: C://basis/
+    prefix: 1
+
+accesskey: AKIDTzPeomTdcS9jEcR2zlwriU7av571ElQw
+secretKey: d7Xr065udBf4I4kEXfdQgLI9pVqnsoZg
+bucket: ap-shanghai
+bucketName: test-1258701698
+path: https://test-1258701698.cos.ap-shanghai.myqcloud.com/
+prefix: demo
 
 spring:
   datasource:
@@ -64,6 +72,11 @@ spring:
 #    static-locations: ["classpath:/templates/**","classpath:/resources/**","classpath:/static/**"]
   resources:
     static-locations: /static/**
+    cache:
+      period: 86400
+      cachecontrol:
+        max-age: 7200
+
   mvc:
     static-path-pattern: /static/**
   thymeleaf:
@@ -77,7 +90,6 @@ spring:
 #    active: dev
 
 
-
 # mybatis-config
 
   #mybatis配置
@@ -88,3 +100,6 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
+
+
+

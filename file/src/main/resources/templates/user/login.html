@@ -32,14 +32,16 @@
         </div>
         <div class="col-md-6">
             <div class="ibox-content">
-                <form class="m-t" role="form" method="post" th:action="@{/user/login}">
+                <form class="m-t" id="loginForm" role="form" method="post">
                     <div class="form-group">
+                        <label class="col-lg-3 control-label" for="username"></label>
                         <input type="text" class="form-control" name="username" id="username" placeholder="用户名" required="">
                     </div>
                     <div class="form-group">
+                        <label class="col-lg-3 control-label" for="password"></label>
                         <input type="password" name="password" id="password" class="form-control" placeholder="密码" required="">
                     </div>
-                    <button type="submit" class="btn btn-primary block full-width m-b">登陆</button>
+                    <button class="btn btn-primary block full-width m-b">登陆</button>
 
                     <a th:href="@{/user/findlost}">
                         <small>忘记密码？</small>

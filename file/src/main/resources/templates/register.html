@@ -46,7 +46,9 @@
                     method: 'post',
                     data: {
                         username: $("#username").val(),
-                        password: $("#password").val()
+                        password: $("#password").val(),
+                        email: $("#email").val(),
+                        operationType: $("#operationType").val()
                     },
                     success: function(result){
                         if(result == "false"){
@@ -79,6 +81,12 @@
                 // var form = window.document.forms[0];
                 // form.action = ctx + 'user/register';
                 // form.submit();
+            }else{
+                swal({
+                    title: "",
+                    text: "请先勾选用户协议",
+                    icon: "error"
+                });
             }
         }
         function openPolicy(){
@@ -107,7 +115,7 @@
             </div>
             <h3>加入MIA</h3>
             <p>内容至上</p>
-            <form class="m-t" name="registerForm"  id="registerForm" role="form">
+            <form class="m-t" name="registerForm" method="post"  id="registerForm" role="form">
                 <div class="form-group">
                     <input type="text" class="form-control" id="username" name="username" placeholder="用户名" required="">
                     <input type="hidden" id="operationType" name="operationType" value="SAVE">
