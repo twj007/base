@@ -18,7 +18,7 @@ $(function(){
                     },
                     remote : {
                         delay: 500,
-                        name : 'username',
+                        name : 'loginName',
                         url : 'user/checkUserExists',
                         message : "该用户不存在",
                         type : 'get'
@@ -40,25 +40,25 @@ $(function(){
                                     message: '密码大于6个字符'
                                 }
                             }
-
-                            if (value === value.toLowerCase()) {
-                                return {
-                                    valid: false,
-                                    message: '包含大写字符'
-                                }
-                            }
-                            if (value === value.toUpperCase()) {
-                                return {
-                                    valid: false,
-                                    message: '包含小写字符'
-                                }
-                            }
-                            if (value.search(/[0-9]/) < 0) {
-                                return {
-                                    valid: false,
-                                    message: '至少包含一个数字'
-                                }
-                            }
+                            //
+                            // if (value === value.toLowerCase()) {
+                            //     return {
+                            //         valid: false,
+                            //         message: '包含大写字符'
+                            //     }
+                            // }
+                            // if (value === value.toUpperCase()) {
+                            //     return {
+                            //         valid: false,
+                            //         message: '包含小写字符'
+                            //     }
+                            // }
+                            // if (value.search(/[0-9]/) < 0) {
+                            //     return {
+                            //         valid: false,
+                            //         message: '至少包含一个数字'
+                            //     }
+                            // }
 
                             return true;
                         }
@@ -74,8 +74,9 @@ $(function(){
         $.post({
             url: "/user/login",
             data: {
-                username: $("#username").val(),
-                password: $("#password").val()
+                username: $("#loginName").val(),
+                password: $("#password").val(),
+                "remember-me": $("#remember-me").val()
             },
             success: function(data){
                 console.log(ctx);

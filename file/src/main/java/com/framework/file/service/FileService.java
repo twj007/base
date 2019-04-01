@@ -81,7 +81,7 @@ public class FileService {
                 for(MultipartFile upload : uploads) {
 
                     // 指定要上传到 COS 上对象键
-                    String key = path + prefix + "/" + UUID.randomUUID().toString() + upload.getOriginalFilename().substring(upload.getOriginalFilename().lastIndexOf("."));
+                    String key = prefix + "/" + UUID.randomUUID().toString() + upload.getOriginalFilename().substring(upload.getOriginalFilename().lastIndexOf("."));
                     File localFile = null;
                     PutObjectRequest putObjectRequest = null;
                     PutObjectResult putObjectResult = null;
@@ -92,6 +92,7 @@ public class FileService {
 
                         putObjectRequest = new PutObjectRequest(bucketName, key, localFile);
                         putObjectResult = cosClient.putObject(putObjectRequest);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                         cosClient.deleteObject(bucketName, key);

@@ -16,7 +16,7 @@ public class GoAuthenticationFailureHandler implements AuthenticationFailureHand
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException, IOException {
         response.setHeader("Content-Type", "application/json;charset=utf-8");
-        response.getWriter().print("{\"code\":500,\"message\":\""+"登录失败："+exception.getMessage()+"\"}");
+        response.getWriter().print("{\"retCode\":500,\"message\":\""+"登录失败："+exception.getMessage()+"\"}");
         response.getWriter().flush();
     }
 }

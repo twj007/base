@@ -4,6 +4,7 @@ import com.framework.file.component.GoAuthenticationFailureHandler;
 import com.framework.file.component.GoAuthenticationSuccessHandler;
 import com.framework.file.component.GoLogoutSuccessHandler;
 import com.framework.file.dao.user.UserDao;
+import com.framework.file.pojo.user.SysUser;
 import com.framework.file.pojo.user.User;
 import com.framework.file.pojo.user.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(
+            http.headers()
+                    .frameOptions()
+                    .disable()
+                .and()
+                .authorizeRequests()
+                    .antMatchers(
             "/",
                         "/webjars/**",
                         "/index",
@@ -40,7 +45,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/static/**",
                         "/templates/**",
                         "/upload",
-                        "/toUpload")
+                        "/toUpload",
+                        "/user/batchRegister")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
@@ -56,6 +62,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .invalidateHttpSession(true)
                     .logoutSuccessHandler(new GoLogoutSuccessHandler())
                     .permitAll()
+                .and()
+                .rememberMe()
+                    .rememberMeCookieName("remember")
+                    .tokenValiditySeconds(60*60*24)
+                    .userDetailsService(userDetailsService())
+                    .authenticationSuccessHandler(new GoAuthenticationSuccessHandler())
+                    .alwaysRemember(false)
+                    .useSecureCookie(true)
                 .and()
                 .csrf()
                     .disable();
@@ -77,9 +91,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         return new UserDetailsService(){
             @Override
             public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-                User u  = userDao.authUser(s);
+                SysUser u  = userDao.authUser(s);
                 if(u == null){
                     throw new RuntimeException("用户名密码错误");
+                }
+                if("1".equals(u.getStatus())){
+                    throw new RuntimeException("该用户已被禁用");
                 }
                 return new UserDetail(u);
             }

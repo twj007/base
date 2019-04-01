@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+<div th:include="include :: head"></div>
+<div th:include="include :: footer"></div>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>面包屑</h2>
+        <ol class="breadcrumb">
+            <li class="active">
+                <a>首页</a>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-8">
+        <div class="title-action">
+
+        </div>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="middle-box text-center animated fadeInRightBig">
+        <h3 class="font-bold">内容区域</h3>
+        <div class="error-desc">
+            这是内容
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -5,12 +5,7 @@
         select      count(1)
         from        sys_user
         where       1=1
-        <if test='username != null and username != ""'>
-           and username=#{username}
-        </if>
-        <if test='mobile != null and mobile != ""'>
-            and mobile=#{mobile}
-        </if>
+        and         login_name=#{loginName}
     </select>
 
     <select id="login" parameterType="User" resultType="User">
@@ -54,8 +49,44 @@
         from      sys_user
     </select>
 
-    <select id="authUser" parameterType="java.lang.String" resultType="User">
+    <select id="authUser" parameterType="java.lang.String" resultType="SysUser">
         select * from sys_user
-        where username=#{username}
+        where login_name=#{username}
+    </select>
+
+    <select id="getListUser" resultType="SysUser">
+        select * from sys_user
+    </select>
+
+    <update id="updateUsers" parameterType="java.util.List">
+
+        <foreach collection="list" item="item" separator=";" open="" close="">
+            update sys_user u
+            <set>
+                u.password=#{item.password}
+            </set>
+            <where>
+                u.user_id=#{item.userId}
+            </where>
+        </foreach>
+    </update>
+
+    <select id="getMenu" parameterType="SysUser" resultType="Menu">
+        select          m.*
+        from            sys_menu m,
+                        sys_role_menu srm,
+                        sys_role r
+        where           m.menu_id=srm.menu_id
+        and             r.role_id=srm.role_id
+        and             r.role_id=
+       (select         role_id
+        from            sys_user su
+        join            sys_user_role sur
+        on              su.user_id=sur.user_id
+        where           su.user_id=#{userId})
+        and             m.menu_type in ('M', 'C')
+        and             m.visible = 0
+        and             r.status = 0
+		order by        m.order_num
     </select>
 </mapper>

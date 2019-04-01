@@ -12,6 +12,7 @@ import com.qcloud.cos.auth.COSCredentials;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
+import org.apache.commons.codec.Charsets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -39,17 +40,17 @@ public class FileController {
     }
 
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = {"application/json;charset=utf-8"})
     public ResponseEntity uploadFile(MultipartFile[] uploads){
         if(uploads == null || uploads.length == 0){
             return ResponseEntity.ok("文件不存在");
         }else{
 
             if(fileService.upload(uploads)){
-                return ResponseEntity.ok("上传成功");
+                return ResponseEntity.ok(new String("上传成功".getBytes(), Charsets.UTF_8));
             }
         }
-        return ResponseEntity.ok("上传失败");
+        return ResponseEntity.ok(new String("上传失败".getBytes(), Charsets.UTF_8));
     }
 
     @GetMapping("/listFile")

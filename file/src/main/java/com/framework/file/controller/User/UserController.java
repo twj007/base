@@ -2,6 +2,7 @@ package com.framework.file.controller.User;
 
 import com.framework.file.pojo.OperationType;
 import com.framework.file.pojo.ResultBody;
+import com.framework.file.pojo.user.SysUser;
 import com.framework.file.pojo.user.User;
 import com.framework.file.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class UserController {
 
     @GetMapping("/checkUserExists")
     @ResponseBody
-    public Map checkUserExists(User user){
+    public Map checkUserExists(SysUser user){
         Long num = userService.checkUserExists(user);
         Map valid = new HashMap();
         if(num > 0){
@@ -61,6 +62,11 @@ public class UserController {
             response.addCookie(c);
             return ResponseEntity.ok(ResultBody.success("success", null));
         }
+    }
+
+    @GetMapping("/main")
+    public ModelAndView toMain(){
+        return new ModelAndView("user/main");
     }
 
     @GetMapping("/findlost")
@@ -96,6 +102,13 @@ public class UserController {
     @GetMapping("/toRegister")
     public ModelAndView toRegister(){
         return new ModelAndView("register");
+    }
+
+    @GetMapping("/batchRegister")
+    @ResponseBody
+    public ResponseEntity<ResultBody> batchRegister(){
+        userService.batchRegister();
+        return ResponseEntity.ok(ResultBody.success("ok", null));
     }
 
     @PostMapping("/register")

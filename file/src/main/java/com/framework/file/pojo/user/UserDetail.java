@@ -9,13 +9,13 @@ import java.util.Collection;
 
 public class UserDetail implements UserDetails {
 
-    private User user;
+    private SysUser user;
 
-    public UserDetail(User user) {
+    public UserDetail(SysUser user) {
         this.user = user;
     }
 
-    public User getUser() {
+    public SysUser getUser() {
         return user;
     }
 
@@ -31,7 +31,7 @@ public class UserDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getUser().getUsername();
+        return getUser().getLoginName();
     }
 
     @Override

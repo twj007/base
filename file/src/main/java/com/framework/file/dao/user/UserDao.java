@@ -1,5 +1,7 @@
 package com.framework.file.dao.user;
 
+import com.framework.file.pojo.user.Menu;
+import com.framework.file.pojo.user.SysUser;
 import com.framework.file.pojo.user.User;
 import org.springframework.stereotype.Repository;
 
@@ -7,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface UserDao {
-    Long checkUserExists(User user);
+    Long checkUserExists(SysUser user);
 
     User login(User user);
 
@@ -19,5 +21,11 @@ public interface UserDao {
 
     List<User> getContactList(User u);
 
-    User authUser(String s);
+    SysUser authUser(String s);
+
+    List<SysUser> getListUser();
+
+    void updateUsers(List<SysUser> users);
+
+    List<Menu> getMenu(SysUser user);
 }
