@@ -18,13 +18,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.web.context.request.RequestContextHolder;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private DataSource dataSource;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -52,7 +59,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticated()
                 .and()
                 .formLogin()
-                    .loginPage("/user/login")
+                    .loginPage("/user/toLogin")
                     .successHandler(new GoAuthenticationSuccessHandler())
                     .failureHandler(new GoAuthenticationFailureHandler())
                     .permitAll()
@@ -65,11 +72,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .rememberMe()
                     .rememberMeCookieName("remember")
-                    .tokenValiditySeconds(60*60*24)
+                    .tokenValiditySeconds(60)
                     .userDetailsService(userDetailsService())
-                    .authenticationSuccessHandler(new GoAuthenticationSuccessHandler())
-                    .alwaysRemember(false)
-                    .useSecureCookie(true)
+                    .tokenRepository(tokenRepository())
                 .and()
                 .csrf()
                     .disable();
@@ -80,6 +85,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
+
+    @Bean
+    public JdbcTokenRepositoryImpl tokenRepository(){
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        tokenRepository.setCreateTableOnStartup(false);
+        return tokenRepository;
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder(){

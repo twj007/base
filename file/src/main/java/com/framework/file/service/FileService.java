@@ -151,7 +151,7 @@ public class FileService {
         UploadFile uploadFile = new UploadFile();
         uploadFile.setFileName("zz2");
         uploadFile.setFileNewName("xx2");
-        uploadFile.setCreateDate(DateFormatUtil.getFormateDateString("yyyy-MM-dd"));
+        uploadFile.setCreateDate(DateFormatUtil.getNow("yyyy-MM-dd"));
         fileDao.saveFile(uploadFile);
         throw new RuntimeException();
     }

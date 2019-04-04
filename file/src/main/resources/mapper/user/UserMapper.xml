@@ -12,7 +12,7 @@
         select      *
         from        sys_user
         where       password=#{password}
-        and         username=#{username}
+        and         login_name=#{username}
     </select>
 
     <insert id="register" parameterType="User" keyProperty="id" useGeneratedKeys="true">

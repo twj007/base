@@ -22,7 +22,7 @@ public class TransactionalService {
         UploadFile uploadFile = new UploadFile();
         uploadFile.setFileName("zz");
         uploadFile.setFileNewName("xx");
-        uploadFile.setCreateDate(DateFormatUtil.getFormateDateString("yyyy-MM-dd"));
+        uploadFile.setCreateDate(DateFormatUtil.getNow("yyyy-MM-dd"));
         Long num = fileDao.saveFile(uploadFile);
         if(num >= 1){
             fileService.insert2();

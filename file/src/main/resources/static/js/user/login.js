@@ -71,6 +71,7 @@ $(function(){
         console.log(e);
     }).on('success.form.bv', function(e){
         e.preventDefault();
+        $("#loginBtn").attr("disabled", true);
         $.post({
             url: "/user/login",
             data: {
@@ -79,7 +80,7 @@ $(function(){
                 "remember-me": $("#remember-me").val()
             },
             success: function(data){
-                console.log(ctx);
+                $("#loginBtn").enable();
                 if(data.code == 500){
                     console.log("登陆失败");
                     return;
@@ -95,5 +96,8 @@ $(function(){
                 }
             }
         });
+        setInterval(function(){
+            $("#loginBtn").removeAttr("disabled");
+        }, 10000);
     });
 });
