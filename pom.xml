@@ -12,6 +12,7 @@
         <module>web</module>
         <module>file</module>
         <module>front</module>
+        <module>pay</module>
     </modules>
 
     <!-- 第一步：添加Springboot的parent -->
@@ -32,6 +33,7 @@
         <requirejs-version>2.3.5</requirejs-version>
         <lombok.version>1.16.20</lombok.version>
         <validation-version>0.5.3</validation-version>
+        <poi-version>3.9</poi-version>
     </properties>
 
 
@@ -62,6 +64,13 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>bootstrapvalidator</artifactId>
                 <version>${validation-version}</version>
+            </dependency>
+
+            <!-- excel -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi-version}</version>
             </dependency>
             <!-- lombok -->
             <dependency>

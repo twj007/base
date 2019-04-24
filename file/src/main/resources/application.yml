@@ -105,4 +105,19 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
 
+alipay:
+  gatewayUrl: https://xxx.com/
+
+  appid: bacssawdaxs2asd3s1A
+
+  appPrivateKey: ajsdk13asjd2kas34dkdj
+
+  formate: 123
+
+  charset: UTF-8
+
+  publicKey: zsdnampdkw2
+
+  signType: RSA
+
 

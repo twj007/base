@@ -13,6 +13,9 @@ import com.qcloud.cos.auth.COSCredentials;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -40,24 +43,24 @@ public class FileService {
     @Autowired
     private FileDao fileDao;
 
-//    @Value("#{accessKey}")
+    //    @Value("#{accessKey}")
     private String accessKey = "AKIDTzPeomTdcS9jEcR2zlwriU7av571ElQw";
-//    @Value("#{secretKey}")
+    //    @Value("#{secretKey}")
     private String secretKey = "d7Xr065udBf4I4kEXfdQgLI9pVqnsoZg";
-//    @Value("#{path}")
+    //    @Value("#{path}")
     private String path = "https://test-1258701698.cos.ap-shanghai.myqcloud.com/";
-//    @Value("#{prefix}")
+    //    @Value("#{prefix}")
     private String prefix = "demo";
-//    @Value("#{bucket}")
+    //    @Value("#{bucket}")
     private String bucket = "ap-shanghai";
-//    @Value("#{bucketName}")
+    //    @Value("#{bucketName}")
     private String bucketName = "test-1258701698";
 
 
     public Boolean saveFilePath(UploadFile uploadFile) throws Exception {
         Long count = fileDao.saveFile(uploadFile);
         int i = 1 / 0;
-        if(count >= 1){
+        if (count >= 1) {
 
             return true;
         }
@@ -69,6 +72,7 @@ public class FileService {
         boolean flag = (boolean) transactionTemplate.execute(new TransactionCallback<Object>() {
             @Override
             public Object doInTransaction(TransactionStatus transactionStatus) {
+
                 // 1 初始化用户身份信息（secretId, secretKey）。
                 COSCredentials cred = new BasicCOSCredentials(accessKey, secretKey);
                 // 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
@@ -77,14 +81,15 @@ public class FileService {
                 // 3 生成 cos 客户端。
                 COSClient cosClient = new COSClient(cred, clientConfig);
                 // bucket的命名规则为{name}-{appid} ，此处填写的存储桶名称必须为此格式
-
-                for(MultipartFile upload : uploads) {
+                //上传到cos的同时，导出excel数据
+                for (MultipartFile upload : uploads) {
 
                     // 指定要上传到 COS 上对象键
                     String key = prefix + "/" + UUID.randomUUID().toString() + upload.getOriginalFilename().substring(upload.getOriginalFilename().lastIndexOf("."));
                     File localFile = null;
                     PutObjectRequest putObjectRequest = null;
                     PutObjectResult putObjectResult = null;
+
                     try {
                         localFile = File.createTempFile("temp", null);
                         upload.transferTo(localFile);
@@ -137,17 +142,17 @@ public class FileService {
 
     public List<UploadFile> getFileList() {
 
-        try{
+        try {
             return fileDao.getFileList();
-        }catch (Exception e){
-            LoggerUtil.log(LOGLEVEL.ERROR, "【exception】: {}",e.fillInStackTrace());
+        } catch (Exception e) {
+            LoggerUtil.log(LOGLEVEL.ERROR, "【exception】: {}", e.fillInStackTrace());
             return null;
         }
     }
 
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
-    public void insert2(){
+    public void insert2() {
         UploadFile uploadFile = new UploadFile();
         uploadFile.setFileName("zz2");
         uploadFile.setFileNewName("xx2");

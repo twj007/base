@@ -45,7 +45,13 @@ public class FileController {
         if(uploads == null || uploads.length == 0){
             return ResponseEntity.ok("文件不存在");
         }else{
-
+            for(MultipartFile file : uploads){
+                String filename = file.getOriginalFilename();
+                if(".xls".equals(filename.substring(filename.lastIndexOf(".")))
+                        || ".xlsx".equals(filename.substring(filename.lastIndexOf("."))) ){
+                    return ResponseEntity.ok("上传文件格式错误！必须为.xls或.xlsx为后缀的文件");
+                }
+            }
             if(fileService.upload(uploads)){
                 return ResponseEntity.ok(new String("上传成功".getBytes(), Charsets.UTF_8));
             }

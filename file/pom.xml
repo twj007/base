@@ -77,6 +77,12 @@
             <artifactId>bootstrapvalidator</artifactId>
         </dependency>
 
+        <!-- excel-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+
         <!-- 插件  -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -90,6 +96,14 @@
             <artifactId>cos_api</artifactId>
             <version>5.5.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>3.3.87.ALL</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
