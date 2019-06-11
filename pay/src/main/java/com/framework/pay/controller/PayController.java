@@ -45,10 +45,14 @@ public class PayController {
     @Value("${alipay.return.publicKey}")
     private String returnKey;
 
+    /***
+     * 退款
+     * @param request
+     */
     @RequestMapping("/notify")
     public void notifyPay(HttpServletRequest request){
-        System.out.println("notify");
-        System.out.println(request.getParameterMap().entrySet());
+        System.out.println("退款提醒");
+
     }
 
 
@@ -64,7 +68,7 @@ public class PayController {
         model.setBody("支付测试，共0.01元");
         model.setProductCode(productCode);//订单模型
 
-        AlipayTradePagePayRequest pagePayRequest =new AlipayTradePagePayRequest();
+        AlipayTradePagePayRequest pagePayRequest = new AlipayTradePagePayRequest();
         //返回地址
         pagePayRequest.setReturnUrl("http://127.0.0.1:8081/toReturnUrl");
         //异步通知地址

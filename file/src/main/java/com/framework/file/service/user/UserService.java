@@ -21,6 +21,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Long checkUserExists(SysUser user) {
@@ -33,7 +36,7 @@ public class UserService {
     }
 
     /****
-     * 邮件服务
+     * 邮件服务，从redis获取一组验证码中的一个，再调用邮件服务发送邮件到对应邮箱
      * @param user
      * @return
      */

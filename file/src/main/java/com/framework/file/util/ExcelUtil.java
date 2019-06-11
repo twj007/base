@@ -7,6 +7,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.List;
 
 /***
@@ -30,8 +32,28 @@ public class ExcelUtil {
             } else {
                 throw new RuntimeException("your upload file must end with .xls or .xlsx");
             }
+            Field[] fields = object.getClass().getDeclaredFields();
+            for(Field field : fields){
+                if(field.getAnnotation(Excel.class) != null){
+                    String type = field.getGenericType().getTypeName();
+                    switch (type){
+                        case "String":
+                            break;
+                        case "Integer":
+                            break;
+                        case  "int":
+                            break;
+                        case  "char":
+                            break;
+                        case  "boolean":
+                            break;
+                        case  "Boolean":
+                            break;
+                        case  "Date":
+                    }
+                }
 
-
+            }
         }
 
         return datas;
