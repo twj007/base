@@ -34,7 +34,7 @@ public class RabbitProducer implements RabbitTemplate.ConfirmCallback {
 
     /****
      *
-     * @param msg
+     * @param msg work模式下，通过交换机和routekey向对应的队列发布消息 发布订阅
      * @return
      */
     public void send(String msg){
@@ -44,7 +44,7 @@ public class RabbitProducer implements RabbitTemplate.ConfirmCallback {
     }
 
     /***
-     * 广播队列消息发送
+     * 广播队列消息发送 绑定了对应交换机的队列都会接收到下列消息
      * @param msg
      */
     public void sendAll(String msg){
