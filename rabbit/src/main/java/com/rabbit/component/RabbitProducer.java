@@ -53,6 +53,12 @@ public class RabbitProducer implements RabbitTemplate.ConfirmCallback {
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_B, "", msg, data);
     }
 
+    public void sendOrder(Object obj){
+        logger.info("【send order】: {}" + obj);
+        CorrelationData data = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_B, "", obj, data);
+    }
+
     /****
      * 发送消息后的回调 b为true 发送成功且接收成功 b为false 接收失败
      * @param correlationData

@@ -17,6 +17,8 @@ public enum Results {
 
     SOLD_OUT(666),
 
+    TIME_OUT(1000),
+
     REPEAT_REQUEST(1405);
 
 
