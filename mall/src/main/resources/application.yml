@@ -1,32 +1,26 @@
+
 server:
   port: 8081
-  servlet:
-    session:
-      cookie:
-        max-age: PT60M
-
-app:
-  host: 127.0.0.1/
-
-file:
-  upload:
-    path: C://basis/
-    prefix: 1
-
-accesskey: AKIDTzPeomTdcS9jEcR2zlwriU7av571ElQw
-secretKey: d7Xr065udBf4I4kEXfdQgLI9pVqnsoZg
-bucket: ap-shanghai
-bucketName: test-1258701698
-path: https://test-1258701698.cos.ap-shanghai.myqcloud.com/
-prefix: demo
 
 spring:
+  application:
+    name: mall-web
+
+  # ==============================================druid
   datasource:
     url: jdbc:mysql://localhost:3306/ruoyi?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
+      master:
+        url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+        username: root
+        password: 123456
+      slaver:
+        url: jdbc:mysql://localhost:3306/ruoyi?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+        username: root
+        password: 123456
       # 下面为连接池的补充设置，应用到上面所有数据源中
       # 初始化大小，最小，最大
       initial-size: 5
@@ -46,7 +40,7 @@ spring:
       pool-prepared-statements: true
       #   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
       max-pool-prepared-statement-per-connection-size: 20
-#      filters: stat,wall
+      #      filters: stat,wall
       use-global-data-source-stat: true
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
@@ -69,35 +63,45 @@ spring:
       filter:
         wall:
           provider-white-list: 127.0.0.1
-  application:
-    name: web
-# 静态资源及模板引擎配置
-#  resources:
-#    static-locations: ["classpath:/templates/**","classpath:/resources/**","classpath:/static/**"]
-  resources:
-    static-locations: /static/**
-    cache:
-      period: PT60M
-      cachecontrol:
-        max-age: PT60M
+  # ==============================================================================
 
-  mvc:
-    static-path-pattern: /static/**
-  thymeleaf:
-    mode: HTML
-    encoding: UTF-8
-    servlet:
-      content-type: text/html
-    suffix: .html
-    cache: false
-#  profiles:
-#    active: dev
+  # ==========================================================================rabbitmq
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+  # ===================================================================================
+  # ============================================================================redis
+  redis:
+    cluster:
+      nodes: 127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381
+    #    port: 6379
+    #    host: 127.0.0.1
+    #    timeout: PT1M
+    lock:
+      key: miaosha
+    password: 123456
+#  timeout duration:
+#  *    "PT20.345S" -- parses as "20.345 seconds"
+#  *    "PT15M"     -- parses as "15 minutes" (where a minute is 60 seconds)
+#  *    "PT10H"     -- parses as "10 hours" (where an hour is 3600 seconds)
+#  *    "P2D"       -- parses as "2 days" (where a day is 24 hours or 86400 seconds)
+#  *    "P2DT3H4M"  -- parses as "2 days, 3 hours and 4 minutes"
+#  *    "P-6H3M"    -- parses as "-6 hours and +3 minutes"
+#  *    "-P6H3M"    -- parses as "-6 hours and -3 minutes"
+#  *    "-P-6H+3M"  -- parses as "+6 hours and -3 minutes"
 
-
-# mybatis-config
-
-  #mybatis配置
-
+# =============================================================thymeleaf
+thymeleaf:
+  mode: HTML
+  encoding: UTF-8
+  servlet:
+    content-type: text/html
+  suffix: .html
+  cache: false
+# =======================================================================
+# ==============================================================mybatis
 mybatis:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
   type-aliases-package: com.framework.file.pojo.file,com.framework.file.pojo.user
@@ -109,19 +113,3 @@ mybatis:
 #    aggressive-lazy-loading: false
 #    lazy-load-trigger-methods: 在调用什么方法时是懒加载的
 #=====================================
-alipay:
-  gatewayUrl: https://xxx.com/
-
-  appid: bacssawdaxs2asd3s1A
-
-  appPrivateKey: ajsdk13asjd2kas34dkdj
-
-  formate: 123
-
-  charset: UTF-8
-
-  publicKey: zsdnampdkw2
-
-  signType: RSA
-
-

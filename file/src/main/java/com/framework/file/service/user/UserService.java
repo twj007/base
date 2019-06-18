@@ -6,6 +6,7 @@ import com.framework.file.pojo.user.SysUser;
 import com.framework.file.pojo.user.User;
 import com.framework.file.util.TreeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -90,5 +91,13 @@ public class UserService {
     public List<Menu> getMenu(SysUser user) {
         List<Menu> menus = userDao.getMenu(user);
         return TreeUtils.getChildPerms(menus, 0);
+    }
+
+    public List<SysUser> listUser(){
+        return userDao.getListUser();
+    }
+
+    public List<Menu> listMenu(){
+        return userDao.getAllMenu();
     }
 }

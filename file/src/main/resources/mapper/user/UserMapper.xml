@@ -1,6 +1,64 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.framework.file.dao.user.UserDao" >
+    
+    
+    <resultMap id="SysUser" type="com.framework.file.pojo.user.SysUser">
+        <id column="user_id" property="userId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="login_name" property="loginName"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_type" property="userType"/>
+        <result column="email" property="email"/>
+        <result column="phonenumber" property="phonenumber"/>
+        <result column="sex" property="sex"/>
+        <result column="avatar" property="avatar"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="status" property="status"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="login_date" property="loginDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="remark" property="remark"/>
+        <result column="img_url" property="imgUrl"/>
+        <result column="job" property="job"/>
+        <collection fetchType="lazy" property="role" ofType="com.framework.file.pojo.user.SysRole" column="user_id" select="getUserRoles" ></collection>
+    </resultMap>
+
+    <select id="getUserRoles" resultType="SysRole">
+        select r.* from sys_user u, sys_role r, sys_user_role ur
+        where u.user_id=ur.user_id and r.role_id=ur.role_id and u.user_id=#{userId}
+    </select>
+
+    <resultMap id="Menu" type="com.framework.file.pojo.user.Menu">
+        <id column="menu_id" property="menuId"/>
+        <result column="menu_name" property="menuName"/>
+        <result column="parent_name" property="parentName"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="url" property="url"/>
+        <result column="menu_type" property="menuType"/>
+        <result column="visable" property="visable"/>
+        <result column="perms" property="perms"/>
+        <result column="icon" property="icon"/>
+        <collection fetchType="lazy" property="children" ofType="com.framework.file.pojo.user.Menu" column="menu_id" select="getMenuByparent"></collection>
+    </resultMap>
+
+    <select id="getAllMenu" resultMap="Menu">
+        select * from sys_menu m
+        where m.parent_id='0'
+    </select>
+
+    <select id="getMenuByparent" resultType="Menu">
+        select * from sys_menu m
+        where m.parent_id=#{parent_id}
+
+    </select>
+    
     <select id="checkUserExists" parameterType="User" resultType="java.lang.Long">
         select      count(1)
         from        sys_user
@@ -54,7 +112,7 @@
         where login_name=#{username}
     </select>
 
-    <select id="getListUser" resultType="SysUser">
+    <select id="getListUser" resultMap="SysUser">
         select * from sys_user
     </select>
 

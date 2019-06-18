@@ -1,6 +1,7 @@
 package com.framework.file.dao.user;
 
 import com.framework.file.pojo.user.Menu;
+import com.framework.file.pojo.user.SysRole;
 import com.framework.file.pojo.user.SysUser;
 import com.framework.file.pojo.user.User;
 import org.springframework.stereotype.Repository;
@@ -28,4 +29,10 @@ public interface UserDao {
     void updateUsers(List<SysUser> users);
 
     List<Menu> getMenu(SysUser user);
+
+    List<Menu> getAllMenu();
+
+    List<Menu> getMenuByparent(Long parentId);
+
+    List<SysRole> getUserRoles(Long userId);
 }
