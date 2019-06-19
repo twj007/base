@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="head">
+    <script th:src="@{/static/js/lib/jquery/jquery-1.11.3.min.js}" type="application/javascript"></script>
+    <link th:href="@{/static/css/lib/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/static/css/lib/bootstrapValidator.min.css}" rel="stylesheet"/>
+    <link th:href="@{/static/css/lib/datepicker3.css}" rel="stylesheet"/>
+    <link th:href="@{/static/css/lib/select2.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="crypto">
+    <script src="../static/js/lib/crypto-js-3.1.9-1/core.js" th:src="@{/static/js/lib/crypto-js-3.1.9-1/core.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/crypto-js-3.1.9-1/x64-core.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/crypto-js-3.1.9-1/enc-base64.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/crypto-js-3.1.9-1/md5.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/crypto-js-3.1.9-1/evpkdf.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/crypto-js-3.1.9-1/cipher-core.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/crypto-js-3.1.9-1/aes.js}" type="application/javascript"></script>
+</div>
+<div th:fragment="footer">
+    <script th:inline="javascript">var ctx = [[@{/}]];</script>
+</div>
+<div th:fragment="echarts">
+    <script th:src="@{/static/js/lib/echarts/echarts.min.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/echarts/echarts.common.min.js}" type="application/javascript"></script>
+</div>
+<div th:fragment="bootstrap">
+    <script th:src="@{/static/js/lib/bootstrap/bootstrap.min.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/bootstrap/bootstrapValidator.min.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/bootstrap/bootstrap-datepicker.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/fileinput/fileinput.min.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/fileinput/fileinput_locale_zh.js}" type="application/javascript"></script>
+    <script th:src="@{/static/js/lib/select2/select2.min.js}" type="application/javascript"></script>
+</div>
+</body>
+
+</html>

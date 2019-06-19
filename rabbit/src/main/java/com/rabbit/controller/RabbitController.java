@@ -67,24 +67,24 @@ public class RabbitController {
         return body;
     }
 
-    @GetMapping("/test")
-    public ResultBody<String> test(){
-        ReadWriteLock lock = redissonClient.getReadWriteLock(key);
-        RBucket<String> test = null;
-        String value = "";
-        try{
-            test = redissonClient.getBucket("test");
-            lock.writeLock().tryLock();
-            test.trySet("ok");
-            value = test.get();
-        } catch (Exception e) {
-            logger.error("【redis interrupted】: {}", e.fillInStackTrace());
-            e.printStackTrace();
-        } finally {
-            lock.writeLock().unlock();
-        }
-        return Results.SUCCESS.result("ok", value);
-    }
+//    @GetMapping("/test")
+//    public ResultBody<String> test(){
+//        ReadWriteLock lock = redissonClient.getReadWriteLock(key);
+//        RBucket<String> test = null;
+//        String value = "";
+//        try{
+//            test = redissonClient.getBucket("test");
+//            lock.writeLock().tryLock();
+//            test.trySet("ok");
+//            value = test.get();
+//        } catch (Exception e) {
+//            logger.error("【redis interrupted】: {}", e.fillInStackTrace());
+//            e.printStackTrace();
+//        } finally {
+//            lock.writeLock().unlock();
+//        }
+//        return Results.SUCCESS.result("ok", value);
+//    }
 
     /***
      * 锁超时下可能会脏读

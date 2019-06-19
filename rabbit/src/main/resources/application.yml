@@ -7,7 +7,7 @@ spring:
     password: guest
   redis:
     cluster:
-      nodes: 127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381
+      nodes: 127.0.0.1:6381,127.0.0.1:6380
 #    port: 6379
 #    host: 127.0.0.1
 #    timeout: PT1M

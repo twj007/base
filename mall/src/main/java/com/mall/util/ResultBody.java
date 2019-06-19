@@ -25,7 +25,7 @@ public class ResultBody<T> implements Serializable {
     }
 
     private ResultBody(int code, String msg, T body){
-        logger.info("【返回数据】code: {}, msg: {}, body{}", code, msg, body);
+        logger.info("【返回数据】code: {}, msg: {}, body:{}", code, msg, body);
         this.code = code;
         this.msg = msg;
         this.body = body;

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>首页</title>
+
+    </head>
+    <body>
+        <div th:include="include::head"></div>
+        <div th:include="include::crypto"></div>
+        <div th:include="include::echarts"></div>
+        <div th:include="include::bootstrap"></div>
+        <div th:include="include::footer"></div>
+        <form class="registerForm">
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" class="form-control" name="username" />
+            </div>
+            <div class="form-group">
+                <label>邮箱</label>
+                <input type="text" class="form-control" name="email" />
+            </div>
+            <div class="form-group">
+                <label>确认邮箱</label>
+                <input type="text" class="form-control" name="cfmEmail" />
+            </div>
+            <div class="form-group">
+                <label>生日</label>
+                <input type="text" class="form-control" name="birthday" readonly>
+            </div>
+            <div class="form-group">
+                <label>文件</label>
+                <input type="file" class="file" id="file" name="file" multiple>
+            </div>
+            <div class="form-group">
+                <label>多选框</label>
+                <select class="select2" id="_select" name="_select"><option></option></select>
+            </div>
+            <div class="form-group">
+                <input type="datetime" name="time" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn" value="提交">
+            </div>
+        </form>
+
+        <form class="registerForm">
+            <input type='text' id='code'>
+            <button onclick="encrypt()">加密</button>
+            <button onclick="decrypt()">解密</button>
+            柱状图
+            <div id="main" style="width: 600px;height:400px;"></div>
+        </form>
+    </body>
+    <style type="text/css">
+        .file-preview{
+            display: none;
+        }
+        .fileinput-upload-button{
+            display: none;
+        }
+    </style>
+    <script type="text/javascript">
+        function encrypt(){
+            var encrypted = getAES($("#code").val());
+
+            console.log(encrypted.toString());
+            $("#code").val(encrypted);
+        }
+
+        function decrypt(){
+            var decrypted = getDAes($("#code").val());
+            console.log(decrypted.toString());
+            $("#code").val(decrypted);
+        }
+
+        function getAesString(data,key,iv){//加密
+            var key  = CryptoJS.enc.Utf8.parse(key);
+            var iv   = CryptoJS.enc.Utf8.parse(iv);
+            var encrypted =CryptoJS.AES.encrypt(data,key,
+                {
+                    iv:iv,
+                    mode:CryptoJS.mode.CBC,
+                    padding:CryptoJS.pad.Pkcs7
+                });
+            return encrypted.toString();    //返回的是base64格式的密文
+        }
+        function getDAesString(encrypted,key,iv){//解密
+            var key  = CryptoJS.enc.Utf8.parse(key);
+            var iv   = CryptoJS.enc.Utf8.parse(iv);
+            var decrypted =CryptoJS.AES.decrypt(encrypted,key,
+                {
+                    iv:iv,
+                    mode:CryptoJS.mode.CBC,
+                    padding:CryptoJS.pad.Pkcs7
+                });
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+
+        function getAES(data){ //加密
+            var key  = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';  //密钥
+            var iv   = '1234567812345678';
+            var encrypted =getAesString(data,key,iv); //密文
+            var encrypted1 =CryptoJS.enc.Utf8.parse(encrypted);
+            return encrypted;
+        }
+
+        function getDAes(data){//解密
+            var key  = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';  //密钥
+            var iv   = '1234567812345678';
+            var decryptedStr =getDAesString(data,key,iv);
+            return decryptedStr;
+        }
+        $(document).ready(function() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: 'ECharts 入门示例'
+                },
+                tooltip: {},
+                legend: {
+                    data:['销量']
+                },
+                // xAxis: {
+                //     data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                // },
+                // yAxis: {},
+                series: [{
+                    name: '销量',
+                    type: 'pie',
+                    data: [{value: 5, name: "衬衫"}, {value: 20, name: "羊毛衫"}, {value: 36, name: "雪纺衫"}, {value: 10, name: "裤子"}, {value: 10, name: "高跟鞋"}, {value: 20, name: "袜子"}]
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
+            //日期组件初始化
+            $('.registerForm input[name="birthday"]').datepicker({
+                autoclose: true,
+                format: 'yyyy/mm/dd',
+                startDate: '-3d',
+                todayBtn: 'linked',
+                clearBtn: 'linked'
+            }).on('hide', function(e) {
+                $('.registerForm').data('bootstrapValidator')
+                    .updateStatus('birthday', 'NOT_VALIDATED', null)
+                    .validateField('birthday');
+
+            });
+            //上传组件初始化
+            $('.registerForm input[name="file"]').fileinput({
+                language: 'zh', //设置语言
+                // uploadUrl: "upload/insert", //上传的地址
+                allowedFileExtensions: ['jpg', 'gif', 'png'], //接收的文件后缀
+                //uploadExtraData:{"id": 1, "fileName":'123.mp3'},
+                uploadAsync: false, //默认异步上传
+                showUpload: false, //是否显示上传按钮
+                showRemove: true, //显示移除按钮
+                showPreview: false, //是否显示预览
+                showCaption: false, //是否显示标题
+                browseClass: "btn btn-primary", //按钮样式
+                maxFileCount: 2,
+                //dropZoneEnabled: true,//是否显示拖拽区域
+                //minImageWidth: 50, //图片的最小宽度
+                //minImageHeight: 50,//图片的最小高度
+                //maxImageWidth: 1000,//图片的最大宽度
+                //maxImageHeight: 1000,//图片的最大高度
+                //maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
+                //minFileCount: 0,
+                //maxFileCount: 10, //表示允许同时上传的最大文件个数
+                enctype: 'multipart/form-data',
+                validateInitialCount: true,
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+
+            }).on('filepreupload', function(event, data, previewId, index) { //上传中
+                $('.registerForm').data('bootstrapValidator')
+                    .updateStatus('file', 'NOT_VALIDATED', null)
+                    .validateField('file');
+
+                var form = data.form,
+                    files = data.files,
+                    extra = data.extra,
+                    response = data.response,
+                    reader = data.reader;
+                console.log('文件正在上传');
+            }).on("fileuploaded", function(event, data, previewId, index) { //一个文件上传成功
+                console.log('文件上传成功！' + data.id);
+
+            }).on('fileerror', function(event, data, msg) { //一个文件上传失败
+                console.log('文件上传失败！' + data.id);
+
+
+            });
+
+            $("#_select").select2({
+                minimumResultsForSearch: -1,
+                data: [{
+                    id: 1,
+                    text: '选项1'
+                },{
+                    id: 2,
+                    text: '选项2'
+                }],
+                width: '100px'
+            });
+            $("#_select").on('change', function(e){
+                $('.registerForm').data('bootstrapValidator')
+                    .updateStatus('_select', 'NOT_VALIDATED', null)
+                    .validateField('_select');
+            });
+            $('.registerForm').bootstrapValidator({
+                message: '无效值',
+                trigger: 'blur change',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    username: {
+                        message: '用户名无效',
+                        validators: {
+                            notEmpty: {
+                                message: '用户名不为空'
+                            },
+                            stringLength: {
+                                min: 6,
+                                max: 30,
+                                message: '用户名在6-20字之间'
+                            },
+                            regexp: {
+                                regexp: /^[a-zA-Z0-9_@.]+$/,
+                                message: '用户名只能为字母，数字，下划线'
+                            },
+                            different: {
+                                field: 'email',
+                                message: '用户名邮箱不能相同'
+                            }
+                        }
+                    },
+                    email: {
+                        validators: {
+                            notEmpty: {
+                                message: '邮箱不为空'
+                            },
+                            emailAddress: {
+                                message: '邮箱格式不正确'
+                            },
+                            identical: {
+                                field: 'email',
+                                message: '邮箱不一致'
+                            },
+                            different: {
+                                field: 'username',
+                                message: '用户名邮箱不能相同'
+                            }
+                        }
+                    },
+                    cfmEmail: {
+                        validators: {
+                            notEmpty: {
+                                message: '邮箱不为空'
+                            },
+                            emailAddress: {
+                                message: '邮箱格式不正确'
+                            },
+                            identical: {
+                                field: 'email',
+                                message: '邮箱不一致'
+                            }
+
+                        }
+                    },
+                    birthday: {
+                        validators: {
+                            notEmpty: {
+                                message: '生日不为空'
+                            },
+                            date: {
+                                format: 'YYYY/MM/DD',
+                                message: '生日必须为日期'
+                            }
+                        }
+                    },
+                    //The maxSize and type are only used if the browser supports HTML 5 File API.
+                    file: {
+                        validators: {
+                            file: {
+                                extension: 'jpg,png,gif',
+                                maxSize: 2048 * 1024,
+                                minSize: 0,
+                                message: '上传文件错误'
+                            },
+                            callback: function(value, validator, $field){
+                                if($(".file-preview-frame:last").attr("data-fileindex") <= 2){
+                                    return true;
+                                }else{
+                                    return false;
+                                }
+                            }
+                        }
+
+                    },
+                    _select: {
+                        validators: {
+                            notEmpty: {
+                                message: '选项不为空'
+                            },
+                            callback: {
+                                message: '请选择选项, 且选项不为选项1',
+                                callback: function(value, validator, $field){
+                                    console.log(value);
+                                    console.log($field);
+
+                                    if(value == '2'){
+                                        return true;
+                                    }
+
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }).on("error.form.bv", function(e) {
+                $('.registerForm').data('bootstrapValidator')
+                    .updateStatus('file', 'NOT_VALIDATED', null)
+                    .validateField('file');
+                console.log(e);
+            }).on("success.form.bv", function(e) {
+                $('.registerForm').data('bootstrapValidator')
+                    .updateStatus('file', 'NOT_VALIDATED', null)
+                    .validateField('file');
+                e.preventDefault();
+                console.log(e);
+            });
+        });
+    </script>
+</html>

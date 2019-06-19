@@ -1,9 +1,13 @@
 //package com.mall.config;
 //
 //
+//import com.alibaba.druid.pool.DruidDataSource;
 //import org.apache.ibatis.session.SqlSessionFactory;
 //import org.mybatis.spring.SqlSessionFactoryBean;
+//import org.mybatis.spring.SqlSessionTemplate;
+//import org.mybatis.spring.annotation.MapperScan;
 //import org.springframework.beans.factory.annotation.Qualifier;
+//import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.boot.context.properties.ConfigurationProperties;
 //import org.springframework.boot.jdbc.DataSourceBuilder;
 //import org.springframework.context.annotation.Bean;
@@ -19,39 +23,37 @@
 // **@description: 多数据源配置（考虑通过aop的方式实现）
 // **@Author: twj
 // **@Date: 2019/06/18
+// * 方式一： 通过不同的配置类，对应不同的mapper文件创建一组不同的datasource，sqlSessionFactory， transactionManager
+// * 方式二： 通过注解标注数据源类型，通过aop切换不同的数据源
+// * 这里是方式一
 // **/
 //@Configuration
+//@MapperScan(basePackages = "com.mall.dao.local", sqlSessionTemplateRef = "masterSqlSessionTemplate")
 //public class DruidConfig {
 //
-////    @Value("${spring.datasource.druid.master.url}")
-////    private String mUrl;
-////
-////    @Value("${spring.datasource.druid.master.username}")
-////    private String mUsername;
-////
-////    @Value("${spring.datasource.druid.master.password}")
-////    private String mPassword;
-////
-////    @Value("${spring.datasource.druid.slaver.driver}")
-////    private String mDriver;
-////
-////    @Value("${spring.datasource.druid.slaver.url}")
-////    private String sUrl;
-////
-////    @Value("${spring.datasource.druid.slaver.username}")
-////    private String sUsername;
-////
-////    @Value("${spring.datasource.druid.slaver.password}")
-////    private String sPassword;
-////
-////    @Value("${spring.datasource.druid.slaver.driver}")
-////    private String sDriver;
+//    @Value("${spring.datasource.druid.master.url}")
+//    private String mUrl;
+//
+//    @Value("${spring.datasource.druid.master.username}")
+//    private String mUsername;
+//
+//    @Value("${spring.datasource.druid.master.password}")
+//    private String mPassword;
+//
+//    @Value("${spring.datasource.druid.slaver.driver-class-name}")
+//    private String mDriver;
+//
 //
 //    @Bean(name = "masterDatasource")
 //    @ConfigurationProperties(prefix = "spring.datasource.druid.master")
 //    @Primary
 //    public DataSource dataSource(){
-//        return DataSourceBuilder.create().build();
+//        DruidDataSource dataSource = new DruidDataSource();
+//        dataSource.setDriverClassName(mDriver);
+//        dataSource.setUrl(mUrl);
+//        dataSource.setUsername(mUsername);
+//        dataSource.setPassword(mPassword);
+//        return dataSource;
 //    }
 //
 //
@@ -59,7 +61,7 @@
 //    @Primary
 //    public SqlSessionFactory sqlSessionFactory() throws Exception {
 //        SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
-//        factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.mapper"));
+//        factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/local/*.xml"));
 //        factory.setTypeAliasesPackage("com.mall.pojo");
 //        factory.setDataSource(dataSource());
 //        return factory.getObject();
@@ -67,9 +69,9 @@
 //
 //    @Bean(name = "masterTransactionTemplate")
 //    @Primary
-//    public TransactionTemplate transactionTemplate(){
+//    public TransactionTemplate transactionTemplate(@Qualifier("masterDatasourceTransactionManager") DataSourceTransactionManager manager){
 //        TransactionTemplate template = new TransactionTemplate();
-//        template.setTransactionManager(DataSourceTransactionManager());
+//        template.setTransactionManager(manager);
 //        return template;
 //    }
 //
@@ -79,32 +81,12 @@
 //        return new DataSourceTransactionManager(dataSource);
 //    }
 //
-//
-//    @Bean(name = "slaverDatasource")
-//    @ConfigurationProperties(prefix = "spring.datasource.druid.slaver")
+//    @Bean(name = "masterSqlSessionTemplate")
 //    @Primary
-//    public DataSource sDataSource(){
-//
+//    public SqlSessionTemplate template(@Qualifier("masterSqlSessionFactory") SqlSessionFactory factory){
+//        return new SqlSessionTemplate(factory);
 //    }
 //
-//
-//    @Bean(name = "slaverSqlSessionFactory")
-//    @Primary
-//    public SqlSessionFactory sSqlSessionFactory(){
-//
-//    }
-//
-//    @Bean(name = "slaverTransactionTemplate")
-//    @Primary
-//    public TransactionTemplate sTransactionTemplate(){
-//
-//    }
-//
-//    @Bean(name = "slaverDatasourceTransactionManager")
-//    @Primary
-//    public DataSourceTransactionManager sDataSourceTransactionManager(){
-//
-//    }
 //
 //
 //
