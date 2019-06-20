@@ -1,4 +1,12 @@
-
+project:
+  properties:
+    jwt:
+      private:
+        key: twj_jien2018
+    aes:
+      key: twl_jien2018_007
+    redisson:
+      key: miaosha
 server:
   port: 8081
 

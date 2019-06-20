@@ -7,6 +7,8 @@ import com.mall.pojo.SmsFlashPromotionProductRelation;
 import com.mall.service.ISmsService;
 import com.mall.util.ResultBody;
 import com.mall.util.Results;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.redisson.api.RBucket;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
@@ -52,6 +54,7 @@ public class SmsController {
      * @return
      */
     @GetMapping("/getFlashActivities")
+    @ApiOperation(value ="获取秒杀活动", notes = "获取秒杀活动列表")
     public ResultBody<List<SmsFlashPromotion>> getFlashActivities(){
         return Results.SUCCESS.result("ok", smsService.getAllFlashActivities());
     }
@@ -62,6 +65,8 @@ public class SmsController {
      * @return
      */
     @GetMapping("/getFlashActivity")
+    @ApiOperation(value ="获取单个秒杀活动", notes = "获取单个秒杀活动")
+    @ApiImplicitParam(value = "秒杀消息", name = "promotion")
     public ResultBody<SmsFlashPromotion> getFlashActivity(SmsFlashPromotion promotion){
         return Results.SUCCESS.result("ok", smsService.getFlashActivity(promotion.getId()));
     }
