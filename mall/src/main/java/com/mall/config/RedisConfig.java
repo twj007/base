@@ -6,6 +6,7 @@ import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
 
 /***
@@ -48,7 +49,6 @@ public class RedisConfig {
                 .setScanInterval(20000);
         return Redisson.create(config);
     }
-
 
     /**
      *  单机配置

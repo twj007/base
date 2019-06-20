@@ -2,6 +2,8 @@ package com.mall.component;
 
 
 import com.mall.config.RabbitConfig;
+import com.mall.pojo.PmsProduct;
+import com.mall.pojo.SmsFlashPromotionProductRelation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -42,6 +44,12 @@ public class RabbitProducer implements RabbitTemplate.ConfirmCallback {
         logger.info("【send msg】: {}", msg);
         CorrelationData data  = new CorrelationData(UUID.randomUUID().toString());
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_A, RabbitConfig.ROUTINGKEY_A, msg, data);
+    }
+
+    public void send(SmsFlashPromotionProductRelation product){
+        logger.info("【send msg】: {}", product);
+        CorrelationData data  = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_A, RabbitConfig.ROUTINGKEY_A, product, data);
     }
 
     /***

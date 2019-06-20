@@ -9,3 +9,5 @@
     8.poi相关
     9.alipay相关
     10.cos（腾讯云存储）相关
+    11.thymeleaf
+    12.druid
