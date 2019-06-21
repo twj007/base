@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import java.util.concurrent.locks.Lock;
  **@Date: 2019/06/20
  **/
 @RestController
+@RequestMapping("/mall")
 public class SmsController {
 
     private static final Logger logger = LoggerFactory.getLogger(SmsController.class);

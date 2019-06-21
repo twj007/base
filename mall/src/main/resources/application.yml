@@ -5,8 +5,11 @@ project:
         key: twj_jien2018
     aes:
       key: twl_jien2018_007
+      iv: 1234567812345678
     redisson:
       key: miaosha
+    white:
+      tables: /index,/login,/register,/homepage
 server:
   port: 8081
 
@@ -18,7 +21,6 @@ spring:
 #    url: jdbc:mysql://localhost:3306/ruoyi?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
 #    username: root
 #    password: 123456
-
     druid:
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
