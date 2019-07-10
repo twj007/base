@@ -97,7 +97,10 @@ spring:
 # mybatis-config
 
   #mybatis配置
-
+  redis:
+    host: 47.100.206.158
+    port: 6379
+    password: jien007
 mybatis:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
   type-aliases-package: com.framework.file.pojo.file,com.framework.file.pojo.user

@@ -16,25 +16,25 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-public class BaseController implements ErrorController {
+public class BaseController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/error")
-    public ModelAndView toError(HttpServletRequest request){
-        Integer resCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        if(resCode == 401 || resCode == 403 || resCode == 404){
-            return new ModelAndView("400");
-        }else{
-            return new ModelAndView("500");
-        }
-    }
-
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
+//    @RequestMapping("/error")
+//    public ModelAndView toError(HttpServletRequest request){
+//        Integer resCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+//        if(resCode == 401 || resCode == 403 || resCode == 404){
+//            return new ModelAndView("400");
+//        }else{
+//            return new ModelAndView("500");
+//        }
+//    }
+//
+//    @Override
+//    public String getErrorPath() {
+//        return "/error";
+//    }
 
     @GetMapping("/")
     public ModelAndView index(HttpServletRequest request, ModelAndView mav){

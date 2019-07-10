@@ -5,6 +5,7 @@ import com.framework.file.pojo.ResultBody;
 import com.framework.file.pojo.user.SysUser;
 import com.framework.file.pojo.user.User;
 import com.framework.file.service.user.UserService;
+import com.framework.file.util.RepeatScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,8 +35,9 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
 
-    @GetMapping("/checkUserExists")
+    @RequestMapping("/checkUserExists")
     @ResponseBody
+    @RepeatScan
     public Map checkUserExists(SysUser user){
         Long num = userService.checkUserExists(user);
         Map valid = new HashMap();
