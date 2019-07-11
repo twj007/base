@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MIA | 登陆</title>
+
+
+</head>
+
+<body class="gray-bg">
+
+<div th:include="include::head"></div>
+<script th:src="@{/static/js/user/login.js}"></script>
+<div class="loginColumns animated fadeInDown">
+    <div class="row">
+
+        <div class="col-md-6">
+            <h2 class="font-bold">Welcome to MIA</h2>
+
+            <p>
+                i'm just playing
+            </p>
+
+            <p>
+                <small>内容至上</small>
+            </p>
+
+        </div>
+        <div class="col-md-6">
+            <div class="ibox-content">
+                <form class="m-t" id="loginForm" role="form" method="post">
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label" for="loginName"></label>
+                        <input type="text" class="form-control" name="loginName" id="loginName" placeholder="用户名" required="">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label" for="password"></label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="密码" required="">
+                    </div>
+                    <div class="checkbox i-checks">
+                        <label>
+                            <input type="checkbox" name="remember-me" id="remember-me"> 记住密码？
+                        </label>
+                    </div>
+
+                    <button id="loginBtn" class="btn btn-primary block full-width m-b">登陆</button>
+
+                    <a th:href="@{/user/findlost}">
+                        <small>忘记密码？</small>
+                    </a>
+
+                    <p class="text-muted text-center">
+                        <small>还没有账号?</small>
+                    </p>
+                    <a class="btn btn-sm btn-white btn-block" th:href="@{/user/toRegister}">创建账号</a>
+                </form>
+                <p class="m-t">
+                    <small>MIA</small>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-6">
+            Copyright MIA Company
+        </div>
+        <div class="col-md-6 text-right">
+            <small> © 2019-2020</small>
+        </div>
+    </div>
+</div>
+
+<div th:include="include::footer"></div>
+<script th:src="@{/static/js/user/login.js}"></script>
+</body>
+
+</html>

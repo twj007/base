@@ -4,10 +4,29 @@
 
     <insert id="saveFile" parameterType="UploadFile">
         insert into sys_file
-        set file_name = #fileName#,
-            file_path = #filePath#,
-            file_new_name = #fileNewName#,
-            create_date = now()
+        set
+            <if test='fileName != null and fileName != ""'>
+                file_name = #{fileName},
+            </if>
+            <if test='filePath != null and filePath != ""'>
+                file_path = #{filePath},
+            </if>
+            <if test='fileNewName != null and fileNewName != ""'>
+                file_new_name = #{fileNewName},
+            </if>
+            <if test='subfolder != null and subfolder != ""'>
+                sub_folder = #{subfolder},
+            </if>
+            <if test='createDate != null and createDate != ""'>
+                create_date = #{createDate}
+            </if>
 
     </insert>
+
+    <select id="getFileList" resultType="UploadFile">
+        select *
+        from sys_file
+
+    </select>
+
 </mapper>

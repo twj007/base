@@ -1,0 +1,151 @@
+2019-06-21-10-37 [main] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：设置数字参数类型不正确
+2019-06-21-10-52 [http-nio-8081-exec-3] [com.mall.component.DynamicDatasource] [ERROR] - 【datasource】数据源为空
+2019-06-21-11-02 [http-nio-8081-exec-2] [com.mall.component.DynamicDatasource] [ERROR] - 【datasource】数据源为空
+2019-06-21-11-04 [http-nio-8081-exec-2] [com.mall.component.DynamicDatasource] [ERROR] - 【datasource】数据源为空
+2019-06-21-11-05 [http-nio-8081-exec-1] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-11-07 [http-nio-8081-exec-4] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-11-08 [http-nio-8081-exec-2] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-11-11 [http-nio-8081-exec-3] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-11-11 [redisson-netty-4-6] [org.redisson.connection.ReplicatedConnectionManager] [ERROR] - Command execution timeout for command: (INFO REPLICATION), command params: [], Redis client: [addr=redis://127.0.0.1:6381]
+org.redisson.client.RedisTimeoutException: Command execution timeout for command: (INFO REPLICATION), command params: [], Redis client: [addr=redis://127.0.0.1:6381]
+	at org.redisson.client.RedisConnection$2.run(RedisConnection.java:213)
+	at io.netty.util.concurrent.PromiseTask$RunnableAdapter.call(PromiseTask.java:38)
+	at io.netty.util.concurrent.ScheduledFutureTask.run(ScheduledFutureTask.java:127)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute$$$capture(AbstractEventExecutor.java:163)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:404)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:464)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:884)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:748)
+2019-06-21-11-11 [redisson-netty-4-5] [org.redisson.connection.ReplicatedConnectionManager] [ERROR] - Command execution timeout for command: (INFO REPLICATION), command params: [], Redis client: [addr=redis://127.0.0.1:6380]
+org.redisson.client.RedisTimeoutException: Command execution timeout for command: (INFO REPLICATION), command params: [], Redis client: [addr=redis://127.0.0.1:6380]
+	at org.redisson.client.RedisConnection$2.run(RedisConnection.java:213)
+	at io.netty.util.concurrent.PromiseTask$RunnableAdapter.call(PromiseTask.java:38)
+	at io.netty.util.concurrent.ScheduledFutureTask.run(ScheduledFutureTask.java:127)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute$$$capture(AbstractEventExecutor.java:163)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:404)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:464)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:884)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:748)
+2019-06-21-11-11 [redisson-netty-4-5] [org.redisson.client.handler.CommandsQueue] [ERROR] - Exception occured. Channel: [id: 0x5cc40621, L:/127.0.0.1:54035 - R:127.0.0.1/127.0.0.1:6381]
+java.io.IOException: 远程主机强迫关闭了一个现有的连接。
+	at sun.nio.ch.SocketDispatcher.read0(Native Method)
+	at sun.nio.ch.SocketDispatcher.read(SocketDispatcher.java:43)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:223)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:192)
+	at sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:380)
+	at io.netty.buffer.PooledUnsafeDirectByteBuf.setBytes(PooledUnsafeDirectByteBuf.java:288)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1108)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:345)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:148)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:646)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:581)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:498)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:460)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:884)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:748)
+2019-06-21-11-11 [redisson-netty-4-2] [org.redisson.client.handler.CommandsQueue] [ERROR] - Exception occured. Channel: [id: 0x02565d32, L:/127.0.0.1:54034 - R:127.0.0.1/127.0.0.1:6380]
+java.io.IOException: 远程主机强迫关闭了一个现有的连接。
+	at sun.nio.ch.SocketDispatcher.read0(Native Method)
+	at sun.nio.ch.SocketDispatcher.read(SocketDispatcher.java:43)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:223)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:192)
+	at sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:380)
+	at io.netty.buffer.PooledUnsafeDirectByteBuf.setBytes(PooledUnsafeDirectByteBuf.java:288)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1108)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:345)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:148)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:646)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:581)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:498)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:460)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:884)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:748)
+2019-06-21-11-12 [http-nio-8081-exec-5] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-11-15 [http-nio-8081-exec-1] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-15-55 [localhost-startStop-1] [org.springframework.boot.web.embedded.tomcat.TomcatStarter] [ERROR] - Error starting Tomcat context. Exception: org.springframework.beans.factory.BeanCreationException. Message: Error creating bean with name 'jwtFilter': Injection of autowired dependencies failed; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'project.white.tables' in value "#{'${project.white.tables}'.split(',')}"
+2019-06-21-15-55 [main] [org.springframework.boot.SpringApplication] [ERROR] - Application run failed
+org.springframework.context.ApplicationContextException: Unable to start web server; nested exception is org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:155)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:544)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:140)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:762)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:398)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:330)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1258)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1246)
+	at com.mall.MallApplication.main(MallApplication.java:30)
+Caused by: org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:126)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:86)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:413)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:174)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:179)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:152)
+	... 8 more
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jwtFilter': Injection of autowired dependencies failed; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'project.white.tables' in value "#{'${project.white.tables}'.split(',')}"
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:378)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1341)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:572)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:204)
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:226)
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:182)
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:177)
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:159)
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:81)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:250)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:237)
+	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:54)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5245)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1421)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1411)
+	at java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:266)
+	at java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'project.white.tables' in value "#{'${project.white.tables}'.split(',')}"
+	at org.springframework.util.PropertyPlaceholderHelper.parseStringValue(PropertyPlaceholderHelper.java:172)
+	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:124)
+	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:237)
+	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:211)
+	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:175)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:839)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1083)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1062)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:583)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:91)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:372)
+	... 24 more
+2019-06-21-15-58 [http-nio-8081-exec-1] [com.mall.component.DynamicDatasource] [ERROR] - 【datasource】数据源为空
+2019-06-21-16-00 [http-nio-8081-exec-2] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-16-10 [http-nio-8081-exec-5] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-16-11 [http-nio-8081-exec-6] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：token 值为空
+2019-06-21-16-37 [main] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】：设置数字参数类型不正确
+2019-06-21-16-37 [main] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】 生成失败: com.mall.util.EncryptUtils.encode(EncryptUtils.java:124)
+2019-06-21-16-38 [main] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】 验证lwt出现异常:{}
+com.auth0.jwt.exceptions.InvalidClaimException: The Claim 'iss' value doesn't match the required one.
+	at com.mall.util.EncryptUtils.getIssuer(EncryptUtils.java:225)
+	at com.mall.util.EncryptUtils.main(EncryptUtils.java:63)
+2019-06-21-16-39 [main] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】 验证lwt出现异常:{}
+com.auth0.jwt.exceptions.InvalidClaimException: The Claim 'iss' value doesn't match the required one.
+	at com.mall.util.EncryptUtils.getIssuer(EncryptUtils.java:225)
+	at com.mall.util.EncryptUtils.main(EncryptUtils.java:63)
+2019-06-21-16-39 [main] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】 验证lwt出现异常:{}
+com.auth0.jwt.exceptions.InvalidClaimException: The Claim 'iss' value doesn't match the required one.
+	at com.mall.util.EncryptUtils.getIssuer(EncryptUtils.java:225)
+	at com.mall.util.EncryptUtils.main(EncryptUtils.java:63)
+2019-06-21-16-40 [main] [com.mall.util.EncryptUtils] [ERROR] - 【jwt】 验证jwt出现异常:{}
+com.auth0.jwt.exceptions.InvalidClaimException: The Claim 'iss' value doesn't match the required one.
+	at com.mall.util.EncryptUtils.getIssuer(EncryptUtils.java:225)
+	at com.mall.util.EncryptUtils.main(EncryptUtils.java:63)

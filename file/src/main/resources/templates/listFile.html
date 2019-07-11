@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>文件</title>
+</head>
+<body>
+
+<!--/*@thymesVar id="uploadFileList" type="java.util.List"*/-->
+<div th:each="upload:${uploadFileList}">
+    <a th:download="${upload.fileName}" th:href="${'http://localhost:8081/downloadFile/_'+upload.fileName+'?filePath='+upload.filePath}" th:text="${upload.fileName}"></a>
+</div>
+</body>
+</html>

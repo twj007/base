@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="cos" />
+        <module name="es" />
+        <module name="file" />
+        <module name="front" />
+        <module name="mall" />
+        <module name="mybatis_senior" />
+        <module name="pay" />
+        <module name="Poi" />
+        <module name="rabbit" />
+        <module name="rabbitconsumer" />
+        <module name="shiro" />
+        <module name="web" />
+      </profile>
+    </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="base" target="1.8" />
-      <module name="cos" target="1.8" />
-      <module name="file" target="1.8" />
-      <module name="front" target="1.8" />
-      <module name="mall" target="1.8" />
-      <module name="mybatis_senior" target="1.8" />
-      <module name="pay" target="1.8" />
-      <module name="rabbit" target="1.8" />
-      <module name="rabbitconsumer" target="1.8" />
-      <module name="shiro" target="1.8" />
-      <module name="web" target="1.8" />
+      <module name="Poi" target="1.8" />
+      <module name="small" target="1.8" />
+      <module name="springSecurity" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

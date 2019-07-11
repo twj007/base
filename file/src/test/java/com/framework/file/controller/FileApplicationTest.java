@@ -1,6 +1,11 @@
 package com.framework.file.controller;
 
 import com.framework.file.FileApplication;
+import com.framework.file.pojo.user.Menu;
+import com.framework.file.pojo.user.SysRole;
+import com.framework.file.pojo.user.SysUser;
+import com.framework.file.pojo.user.User;
+import com.framework.file.service.user.UserService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,18 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
@@ -32,6 +31,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.UUID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = FileApplication.class)
@@ -81,6 +82,48 @@ public class FileApplicationTest {
                 .andReturn().getResponse().getContentAsString();
         Assert.assertEquals("上传成功", result);
 
+    }
+
+    @Test
+    public void testEncoder(){
+        System.out.println();
+    }
+
+    @Autowired
+    UserService userService;
+
+//    @Test
+//    public void testUserService(){
+//        SysUser u = new SysUser();
+//        u.setUserName("test");
+//        Assert.assertEquals(Long.valueOf(1), userService.checkUserExists(u));
+//        u.setPassword("ok");
+//        //Assert.assertNotEquals(null, userService.login(u));
+//        //Assert.assertNotEquals(null, userService.getContactList(u));
+//        u.setEmail("test@qq.com");
+//        u.setUserId(Long.valueOf(7));
+//        //Assert.assertEquals(true, userService.updateUser(u));
+//    }
+
+    @Test
+    public void testMybatis(){
+        //将String类型转换成UUID类型
+        UUID id = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d");
+
+        System.out.println(id);
+        // conllection 配置中通过fetchType=LAZY开启了懒加载
+        List<SysUser> users = userService.listUser();
+        System.out.println(users);
+        for(SysUser user : users){
+            List<SysRole> roles = user.getRole();
+            if(roles.size() > 0){
+                System.out.println(roles.get(0).getRoleName());
+            }
+        }
+        Assert.assertNotEquals(users, null);
+//        List<Menu> menus = userService.listMenu();
+//        System.out.println(menus);
+//        Assert.assertNotEquals(menus, null);
     }
 }
 
