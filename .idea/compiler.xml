@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="base" target="1.8" />
+      <module name="cos" target="1.8" />
+      <module name="file" target="1.8" />
+      <module name="front" target="1.8" />
+      <module name="mall" target="1.8" />
+      <module name="mybatis_senior" target="1.8" />
+      <module name="pay" target="1.8" />
+      <module name="rabbit" target="1.8" />
+      <module name="rabbitconsumer" target="1.8" />
+      <module name="shiro" target="1.8" />
+      <module name="web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
