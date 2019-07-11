@@ -13,9 +13,9 @@ file:
     path: C://basis/
     prefix: 1
 
-accesskey: AKIDTzPeomTdcS9jEcR2zlwriU7av571ElQw
-secretKey: d7Xr065udBf4I4kEXfdQgLI9pVqnsoZg
-bucket: ap-shanghai
+accesskey: 
+secretKey: 
+bucket: 
 bucketName: test-1258701698
 path: https://test-1258701698.cos.ap-shanghai.myqcloud.com/
 prefix: demo
@@ -100,7 +100,7 @@ spring:
   redis:
     host: 47.100.206.158
     port: 6379
-    password: jien007
+    password: 
 mybatis:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
   type-aliases-package: com.framework.file.pojo.file,com.framework.file.pojo.user
@@ -115,7 +115,7 @@ mybatis:
 alipay:
   gatewayUrl: https://xxx.com/
 
-  appid: bacssawdaxs2asd3s1A
+  appid: 
 
   appPrivateKey: ajsdk13asjd2kas34dkdj
 
