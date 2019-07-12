@@ -36,14 +36,16 @@ public class DatasourceAspect {
         Class[] argClass = ((MethodSignature)point.getSignature()).getParameterTypes();
         String dataSource = DatasourceContext.DEFAULT_DATASOURCE;
         try {
-
-            if(className.isAnnotationPresent(DataSource.class)){
-                DataSource annotation  = className.getAnnotation(DataSource.class);
-                dataSource = annotation.type();
-            }else if(className.getMethod(methodName, argClass).isAnnotationPresent(DataSource.class)){
+            // 如果方法上有注解按照方法上的配置去设置数据源。
+            // 不然再去检查类上是否有注解，有的话就设置数据源，不然的话使用的就是默认的数据源。
+            // 优先级: 方法注解 > 类注解 > 默认数据源
+            if(className.getMethod(methodName, argClass).isAnnotationPresent(DataSource.class)){
                 // 得到访问的方法对象
                 Method method = className.getMethod(methodName, argClass);
                 DataSource annotation = method.getAnnotation(DataSource.class);
+                dataSource = annotation.type();
+            } else if(className.isAnnotationPresent(DataSource.class)){
+                DataSource annotation  = className.getAnnotation(DataSource.class);
                 dataSource = annotation.type();
             }
             logger.info("【datasource aspect】：当前数据源: {}", dataSource);

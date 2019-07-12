@@ -1,6 +1,9 @@
+
 spring:
   data:
     elasticsearch:
       repositories:
         enabled: true
       cluster-nodes: 47.100.206.158:9300
+server:
+  port: 8081

@@ -1,4 +1,6 @@
 project:
+  exclude:
+    path: /,/index,/login/regiter,/home
   properties:
     jwt:
       private:

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.time.Duration;
+import java.util.List;
 
 /***
  **@project: base
@@ -25,6 +26,10 @@ public class StaticConfig extends WebMvcConfigurationSupport {
     @Autowired
     private TokenFilter tokenFilter;
 
+    @Value("#{'project.exclude.path'.split(',')}")
+    private List<String> excludePath;
+
+
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         CacheControl cacheControl = CacheControl.empty();
         registry.addResourceHandler("/static/**").addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX+"/static/");
@@ -35,7 +40,12 @@ public class StaticConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(tokenFilter).addPathPatterns("/**");
+
+        if(excludePath.size() > 0){
+            registry.addInterceptor(tokenFilter).addPathPatterns("/**").excludePathPatterns(excludePath);
+        }else{
+            registry.addInterceptor(tokenFilter).addPathPatterns("/**");
+        }
         super.addInterceptors(registry);
     }
 }

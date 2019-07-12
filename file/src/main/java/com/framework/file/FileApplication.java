@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ResourceUtils;
@@ -30,6 +31,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @EnableWebMvc
 @ServletComponentScan(basePackages = "com.framework.file.component")
+@EnableRedisHttpSession
 public class FileApplication {
 
     TransactionTemplate transactionTemplate;
