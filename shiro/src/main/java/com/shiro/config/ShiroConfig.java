@@ -81,11 +81,11 @@ public class ShiroConfig {
      * 需要自定义连接器时通过这个去配置
      * @return
      */
-//    @Bean
-//    ShiroFilterFactoryBean shiroFilterFactoryBean(){
-//        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-//        shiroFilterFactoryBean.setSecurityManager(securityManager());
-//        //拦截器
+    @Bean
+    ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("webSecurityManager") DefaultWebSecurityManager webSecurityManager){
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        shiroFilterFactoryBean.setSecurityManager(webSecurityManager);
+        //拦截器
 //        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 //        // 添加自己的过滤器并且取名
 //        Map<String, Filter> filterMap = new HashMap<>(16);
@@ -106,12 +106,8 @@ public class ShiroConfig {
 //            }
 //        });
 //        shiroFilterFactoryBean.setFilters(filterMap);
-//        filterChainDefinitionMap.put("login", "anon");
-//        //<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边
-//        filterChainDefinitionMap.put("/**", "jwt");
-//        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-//        return shiroFilterFactoryBean;
-//    }
+        return shiroFilterFactoryBean;
+    }
 
 
     @Bean
@@ -129,7 +125,7 @@ public class ShiroConfig {
         return manager;
     }
 
-    @Bean
+    @Bean("webSecurityManager")
     DefaultWebSecurityManager webSecurityManager(@Qualifier("myRealm") MyRealm myRealm){
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setRememberMeManager(rememberMeManager());

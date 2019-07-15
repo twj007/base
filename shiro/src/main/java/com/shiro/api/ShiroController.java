@@ -26,7 +26,7 @@ public class ShiroController {
     @RequiresRoles("admin")
     public ResponseEntity getInfo(){
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("admin get info");
     }
 
     /***
@@ -111,5 +111,9 @@ public class ShiroController {
         return ResponseEntity.ok("login success, you'll be redirect to homepage in 3sec");
     }
 
-
+    @RequestMapping("/logout")
+    public ResponseEntity logout(){
+        SecurityUtils.getSubject().logout();
+        return ResponseEntity.ok("logout success");
+    }
 }

@@ -28,7 +28,8 @@ public class MyRealm extends AuthorizingRealm {
         if(principalCollection == null){
             throw new AuthorizationException("user principal is null");
         }
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(principalCollection.asSet());
+        info.setRoles(((ShiroUser)principalCollection.getPrimaryPrincipal()).getRoles());
         return info;
     }
 
@@ -45,7 +46,7 @@ public class MyRealm extends AuthorizingRealm {
         String password = new String((char[])authenticationToken.getCredentials());
         System.out.println(password.hashCode());
 
-        if("jien".equals((authenticationToken.getPrincipal())) && "123456".equals(password)){
+        if("jien007".equals((authenticationToken.getPrincipal())) && "12345".equals(password)){
             ShiroUser user = new ShiroUser();
             Set<String> premissions = new HashSet<>();
             premissions.add("customer:search");
@@ -56,6 +57,8 @@ public class MyRealm extends AuthorizingRealm {
             roles.add("user");
             user.setUsername((String)authenticationToken.getPrincipal());
             user.setPassword(new String((char[])authenticationToken.getCredentials()));
+            user.setPerms(premissions);
+            user.setRoles(roles);
             return new SimpleAuthenticationInfo(user, user.getPassword(), user.getUsername());
         }
         return null;
