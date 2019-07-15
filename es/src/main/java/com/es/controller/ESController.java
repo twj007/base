@@ -4,8 +4,13 @@ import com.es.dto.Phone;
 import com.es.dto.VIP;
 import com.es.resp.ESRepository;
 import com.es.resp.VIPRepository;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.lucene.queryparser.xml.builders.BooleanQueryBuilder;
 import org.elasticsearch.Version;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.lucene.search.function.FiltersFunctionScoreQuery;
 import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
@@ -14,6 +19,12 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +32,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -33,10 +45,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /***
  **@project: base
@@ -178,6 +187,10 @@ public class ESController {
         }else {
             builder.withQuery(QueryBuilders.queryStringQuery(keyword)).withPageable(page);
         }
+        //过滤查询 过滤掉价格小于1000的数据
+        //builder.withFilter(QueryBuilders.boolQuery().mustNot(QueryBuilders.rangeQuery("price").lt(1000f)));
+        // 过滤出 品牌为华为，价格大于2000的数据
+        //builder.withFilter(QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("brand", "华为")).filter(QueryBuilders.rangeQuery("price").gt(2000)));
         switch(sort){
             case 1:
                 builder.withSort(SortBuilders.fieldSort("brand").order(SortOrder.DESC));
@@ -198,6 +211,159 @@ public class ESController {
     }
 
 
+    @RequestMapping("/highlight")
+    public ResponseEntity highlight(@RequestParam(defaultValue = "5") int pageSize,
+                                 @RequestParam(defaultValue = "0") int pageNum,
+                                 @RequestParam(defaultValue = "1") int sort,
+                                 String keyword){
+        Pageable page = PageRequest.of(pageNum, pageSize);
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
+        if(StringUtils.isEmpty(keyword)){
+            builder.withQuery(QueryBuilders.matchAllQuery()).withPageable(page);
+        }else {
+            builder.withQuery(QueryBuilders.matchPhraseQuery("brand", keyword))
+                    .withHighlightFields(new HighlightBuilder.Field("brand"))
+                    .withPageable(page);
+        }
+        switch(sort){
+            case 1:
+                builder.withSort(SortBuilders.fieldSort("brand").order(SortOrder.DESC));
+                break;
+            case 2:
+                builder.withSort(SortBuilders.fieldSort("model").order(SortOrder.DESC));
+                break;
+            case 3:
+                builder.withSort(SortBuilders.fieldSort("price").order(SortOrder.DESC));
+                break;
+            default:
+                builder.withSort(SortBuilders.fieldSort("price").order(SortOrder.ASC));
+                break;
+        }
+        SearchQuery query = builder.build();
+        return ResponseEntity.ok( elasticsearchTemplate.query(query, response -> {
+
+            //直接返回es原封结果到前端
+            return response.toString();
+        }));
+    }
+
+
+    /***
+     * 单单获取统计个数
+     * @param pageNum
+     * @param pageSize
+     * @param sort
+     * @param keyword
+     * @return
+     */
+    @RequestMapping("/group/single")
+    public ResponseEntity single(@RequestParam(defaultValue = "0")int pageNum,
+                                @RequestParam(defaultValue = "5")int pageSize,
+                                @RequestParam(defaultValue = "1")int sort,
+                                String keyword){
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
+        Pageable page = PageRequest.of(pageNum, pageSize);
+        builder.withPageable(page);
+        if(StringUtils.isEmpty(keyword)){
+            builder.withQuery(QueryBuilders.matchAllQuery());
+        }else{
+            builder.withQuery(QueryBuilders.multiMatchQuery(keyword, "brand", "model"));
+        }
+        builder.addAggregation(AggregationBuilders.terms("brand").field("brand"));
+        Aggregations aggregations = elasticsearchTemplate.query(builder.build(),
+                new ResultsExtractor<Aggregations>() {
+                    @Override
+                    public Aggregations extract(SearchResponse response) {
+                        return response.getAggregations();
+                    }
+                });
+
+        StringTerms modelTerms = (StringTerms) aggregations.asMap().get("brand");
+        Map<String, Long> map = new HashMap<>();
+        for (Terms.Bucket actionTypeBucket : modelTerms.getBuckets()) {
+            //actionTypeBucket.getKey().toString()聚合字段的相应名称,actionTypeBucket.getDocCount()相应聚合结果
+            map.put(actionTypeBucket.getKey().toString(),
+                    actionTypeBucket.getDocCount());
+        }
+
+        return ResponseEntity.ok(map);
+    }
+
+
+
+    /***
+     * 统计 某个品牌下 的平均价格，并根据价格排序 (关键字必须是精确的)
+     * @param pageNum
+     * @param pageSize
+     * @param sort
+     * @param keyword
+     * @return
+     */
+    @RequestMapping("/group")
+    public ResponseEntity group(@RequestParam(defaultValue = "0")int pageNum,
+                                @RequestParam(defaultValue = "5")int pageSize,
+                                @RequestParam(defaultValue = "1")int sort,
+                                String keyword){
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
+        Pageable page = PageRequest.of(pageNum, pageSize);
+        builder.withPageable(page);
+        if(StringUtils.isEmpty(keyword)){
+            builder.withQuery(QueryBuilders.matchAllQuery());
+        }else{
+            builder.withQuery(QueryBuilders.multiMatchQuery(keyword, "brand", "model"));
+        }
+        builder.addAggregation(AggregationBuilders.terms("brand_count").field("brand").order(Terms.Order.aggregation("price", true))
+                .subAggregation(AggregationBuilders.avg("price").field("price")));
+        return ResponseEntity.ok(elasticsearchTemplate.query(builder.build(), response -> {
+
+            //直接返回es原封结果到前端
+            return response.toString();
+        }));
+    }
+
+    /***
+     * 先分区再分组求和平均
+     * @param pageNum
+     * @param pageSize
+     * @param sort
+     * @param keyword
+     * @return
+     */
+    @RequestMapping("/group/range")
+    public ResponseEntity range(@RequestParam(defaultValue = "0")int pageNum,
+                                @RequestParam(defaultValue = "5")int pageSize,
+                                @RequestParam(defaultValue = "1")int sort,
+                                String keyword){
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
+        Pageable page = PageRequest.of(pageNum, pageSize);
+        builder.withPageable(page);
+        if(StringUtils.isEmpty(keyword)){
+            builder.withQuery(QueryBuilders.matchAllQuery());
+        }else{
+            builder.withQuery(QueryBuilders.multiMatchQuery(keyword, "brand", "model"));
+        }
+        builder.addAggregation(AggregationBuilders.range("range_by_price").field("price")
+                                .addRange(0, 1001)
+                                .addRange(1001, 2001)
+                                .addRange(2001, 10001)
+                                .subAggregation(
+                                        AggregationBuilders.terms("brand_count")
+                                                .field("brand")
+                                                .order(Terms.Order.aggregation("price", false))
+                                                .subAggregation(
+                                                        AggregationBuilders
+                                                                .avg("price")
+                                                                .field("price"))
+                                                ));
+        return ResponseEntity.ok(elasticsearchTemplate.query(builder.build(), response -> {
+
+            //直接返回es原封结果到前端
+            return response.toString();
+        }));
+    }
+
+
+
     /***
      * 在设计索引中type的mapping时，必须要带上自定义的score属性，不然会查不出任何评分结果
      * @param pageNum
@@ -209,7 +375,6 @@ public class ESController {
     @RequestMapping("/recommend")
     public ResponseEntity recommend(@RequestParam(defaultValue = "0")int pageNum,
                                     @RequestParam(defaultValue = "5")int pageSize,
-                                    @RequestParam(defaultValue = "1")int sort,
                                     String keyword){
         Pageable page = PageRequest.of(pageNum, pageSize);
         NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
@@ -217,31 +382,20 @@ public class ESController {
             builder.withQuery(QueryBuilders.matchAllQuery());
         }else{
             List<FunctionScoreQueryBuilder.FilterFunctionBuilder> functionBuilders = new ArrayList<>();
-            functionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("brand", keyword), ScoreFunctionBuilders.weightFactorFunction(10)));
-            functionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("model", keyword), ScoreFunctionBuilders.weightFactorFunction(5)));
-            functionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("desc", keyword), ScoreFunctionBuilders.weightFactorFunction(2)));
-            functionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("price", keyword), ScoreFunctionBuilders.weightFactorFunction(3)));
+            functionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("brand", keyword), ScoreFunctionBuilders.weightFactorFunction(1)));
+            functionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("model", keyword), ScoreFunctionBuilders.weightFactorFunction(7)));
+            functionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("desc", keyword), ScoreFunctionBuilders.weightFactorFunction(3)));
             FunctionScoreQueryBuilder.FilterFunctionBuilder[] filterFunctionBuilders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[functionBuilders.size()];
             functionBuilders.toArray(filterFunctionBuilders);
-            FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(filterFunctionBuilders).scoreMode(FiltersFunctionScoreQuery.ScoreMode.SUM).setMinScore(0.1f);
+            FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(filterFunctionBuilders).scoreMode(FiltersFunctionScoreQuery.ScoreMode.SUM).setMinScore(2f);
             builder.withQuery(functionScoreQueryBuilder);
         }
-        switch(sort){
-            case 3:
-                builder.withSort(SortBuilders.fieldSort("price").order(SortOrder.DESC));
-                break;
-            case 1:
-                builder.withSort(SortBuilders.fieldSort("brand").order(SortOrder.DESC));
-                break;
-            case 2:
-                builder.withSort(SortBuilders.fieldSort("model").order(SortOrder.DESC));
-                break;
-            default:
-                builder.withSort(SortBuilders.fieldSort("price").order(SortOrder.ASC));
-        }
         builder.withPageable(page);
-        List<Phone> phones = elasticsearchTemplate.queryForList(builder.build(), Phone.class);
-        return ResponseEntity.ok(phones);
+        //List<Phone> phones = elasticsearchTemplate.queryForList(builder.build(), Phone.class);
+        return ResponseEntity.ok(elasticsearchTemplate.query(builder.build(), response -> {
+            //直接返回es原封结果到前端
+            return response.toString();
+        }));
     }
 
 

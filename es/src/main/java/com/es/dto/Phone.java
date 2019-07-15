@@ -1,10 +1,12 @@
 package com.es.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /***
  **@project: base
@@ -25,8 +27,19 @@ public class Phone implements Serializable {
     private String model;
 
     private String desc;
-    @Field(fielddata = true)
-    private String price;
+
+    private float price;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date  create_date;
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
 
     public String getId() {
         return id;
@@ -60,11 +73,11 @@ public class Phone implements Serializable {
         this.desc = desc;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 }
