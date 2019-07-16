@@ -46,7 +46,7 @@ public class MyRealm extends AuthorizingRealm {
         String password = new String((char[])authenticationToken.getCredentials());
         System.out.println(password.hashCode());
 
-        if("jien007".equals((authenticationToken.getPrincipal())) && "12345".equals(password)){
+        if("jien".equals((authenticationToken.getPrincipal())) && "123456".equals(password)){
             ShiroUser user = new ShiroUser();
             Set<String> premissions = new HashSet<>();
             premissions.add("customer:search");

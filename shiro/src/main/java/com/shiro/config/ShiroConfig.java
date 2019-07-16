@@ -1,6 +1,7 @@
 package com.shiro.config;
 
 import com.shiro.component.MyRealm;
+import com.shiro.component.ShiroRedisManager;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -33,8 +34,16 @@ import java.util.Map;
 public class ShiroConfig {
 
     @Bean("myRealm")
-    MyRealm myRealm(){
-        return new MyRealm();
+    MyRealm myRealm(@Qualifier("shiroRedisManager")ShiroRedisManager shiroRedisManager){
+
+        MyRealm realm = new MyRealm();
+        realm.setCachingEnabled(true);
+        realm.setCacheManager(shiroRedisManager);
+        realm.setAuthorizationCachingEnabled(true);
+        realm.setAuthenticationCachingEnabled(true);
+        realm.setAuthenticationCacheName("Authentication");
+        realm.setAuthorizationCacheName("Authorization");
+        return realm;
     }
 
     @Bean
@@ -126,9 +135,10 @@ public class ShiroConfig {
     }
 
     @Bean("webSecurityManager")
-    DefaultWebSecurityManager webSecurityManager(@Qualifier("myRealm") MyRealm myRealm){
+    DefaultWebSecurityManager webSecurityManager(@Qualifier("myRealm") MyRealm myRealm, @Qualifier("shiroRedisManager")ShiroRedisManager shiroRedisManager){
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setRememberMeManager(rememberMeManager());
+        manager.setCacheManager(shiroRedisManager);
         manager.setRealm(myRealm);
         return manager;
     }

@@ -5,5 +5,10 @@ spring:
       repositories:
         enabled: true
       cluster-nodes: 47.100.206.158:9300
+  redis:
+    port: 6379
+    host: localhost
+  session:
+    store-type: redis
 server:
-  port: 8081
+  port: 8082

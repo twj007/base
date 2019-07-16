@@ -1,6 +1,6 @@
 package com.framework.file.config;
 
-import com.framework.file.component.TokenFilter;
+import com.framework.file.component.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
@@ -24,7 +24,7 @@ import java.util.List;
 public class StaticConfig extends WebMvcConfigurationSupport {
 
     @Autowired
-    private TokenFilter tokenFilter;
+    private RequestInterceptor tokenFilter;
 
     @Value("#{'project.exclude.path'.split(',')}")
     private List<String> excludePath;

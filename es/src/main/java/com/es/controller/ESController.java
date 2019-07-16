@@ -42,6 +42,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -65,6 +66,7 @@ public class ESController {
 
     @Autowired
     private VIPRepository vipRepository;
+
 
     @GetMapping("/vip")
     public ResponseEntity searchVip(@RequestBody VIP vip){
@@ -368,7 +370,7 @@ public class ESController {
      * 在设计索引中type的mapping时，必须要带上自定义的score属性，不然会查不出任何评分结果
      * @param pageNum
      * @param pageSize
-     * @param sort
+     * @param
      * @param keyword
      * @return
      */

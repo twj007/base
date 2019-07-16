@@ -6,12 +6,20 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.*;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
 
 /***
  **@project: base
@@ -22,9 +30,46 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ShiroController {
 
+//    @Autowired
+//    RestTemplate restTemplate;
+//
+//
+//    @RequestMapping("/v2")
+//    public ResponseEntity v2(HttpServletRequest request){
+//        System.out.println(request.getSession());
+//        HttpHeaders head = new HttpHeaders();
+//        head.add("Cookie", request.getSession().getId());
+//        HttpEntity requestEntity = new HttpEntity(null, head);
+//        ResponseEntity responseEntity = restTemplate.exchange("http://localhost:8082/v2", HttpMethod.POST, requestEntity, String.class);
+//        return ResponseEntity.ok(responseEntity.getBody());
+//    }
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    /****
+     * session共享示例。 在rest请求中通过请求头传递session，另一端通过这个请求头去redis中拿session的信息
+     * @param request
+     * @return
+     */
+    @RequestMapping("/v2")
+    @RequiresGuest
+    public List v2(HttpServletRequest request){
+        System.out.println(request.getHeader("Cookie"));
+        String sessionId = request.getHeader("Cookie");
+        List values = redisTemplate.opsForHash().values("spring:session:sessions:"+sessionId);
+        return values;
+    }
+
     @RequestMapping("/getInfo")
     @RequiresRoles("admin")
-    public ResponseEntity getInfo(){
+    public ResponseEntity getInfo(HttpServletRequest request){
+        Enumeration<String> attrs = request.getSession().getAttributeNames();
+        while(attrs.hasMoreElements()){
+            String s = attrs.nextElement();
+            System.out.println(s);
+            System.out.println(request.getSession().getValue(s));
+        }
 
         return ResponseEntity.ok("admin get info");
     }
@@ -95,14 +140,18 @@ public class ShiroController {
     }
 
     @RequestMapping("/login")
-    public ResponseEntity login(ShiroUser user){
+    public ResponseEntity login(ShiroUser user, HttpServletRequest request){
         if(StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())){
             return ResponseEntity.badRequest().body("username or password should not be null");
         }
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
+        if(user.getRememberMe()){
+            token.setRememberMe(true);
+        }
         try{
             subject.login(token);
+            request.getSession().setAttribute("username", user.getUsername());
         }catch (AuthenticationException e){
             e.printStackTrace();
             System.out.println("authentication failed");

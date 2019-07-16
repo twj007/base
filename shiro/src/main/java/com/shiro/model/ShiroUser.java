@@ -1,5 +1,6 @@
 package com.shiro.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +11,7 @@ import java.util.Set;
  **@Author: twj
  **@Date: 2019/07/15
  **/
-public class ShiroUser {
+public class ShiroUser implements Serializable {
 
     private Long id;       // 用户id
     private String username;   // 登录名，不可改
@@ -21,6 +22,15 @@ public class ShiroUser {
     private Date updatedate;   // 修改时间
     private Set<String> roles = new HashSet<>();    //用户所有角色值，用于shiro做角色权限的判断
     private Set<String> perms = new HashSet<>();
+    private boolean rememberMe;
+
+    public boolean getRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
+    }
 
     public Long getId() {
         return id;
@@ -92,5 +102,21 @@ public class ShiroUser {
 
     public void setPerms(Set<String> perms) {
         this.perms = perms;
+    }
+
+    @Override
+    public String toString() {
+        return "ShiroUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", nick='" + nick + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", createdate=" + createdate +
+                ", updatedate=" + updatedate +
+                ", roles=" + roles +
+                ", perms=" + perms +
+                ", rememberMe=" + rememberMe +
+                '}';
     }
 }
