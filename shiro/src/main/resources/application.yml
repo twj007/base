@@ -77,4 +77,5 @@ spring:
     port: 6379
   session:
     store-type: redis
+
 #=====================================

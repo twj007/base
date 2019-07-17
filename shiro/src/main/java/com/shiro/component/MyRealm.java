@@ -8,6 +8,7 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.tomcat.util.buf.HexUtils;
@@ -23,6 +24,11 @@ import java.util.Set;
  **/
 public class MyRealm extends AuthorizingRealm {
 
+    /***
+     * 对用户赋予角色和授权
+     * @param principalCollection
+     * @return
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         if(principalCollection == null){
@@ -56,10 +62,11 @@ public class MyRealm extends AuthorizingRealm {
             roles.add("admin");
             roles.add("user");
             user.setUsername((String)authenticationToken.getPrincipal());
-            user.setPassword(new String((char[])authenticationToken.getCredentials()));
+            user.setPassword(password);
             user.setPerms(premissions);
             user.setRoles(roles);
-            return new SimpleAuthenticationInfo(user, user.getPassword(), user.getUsername());
+            String pass = new SimpleHash("md5", user.getPassword(), null, 2).toString();
+            return new SimpleAuthenticationInfo(user, pass, user.getUsername());
         }
         return null;
     }

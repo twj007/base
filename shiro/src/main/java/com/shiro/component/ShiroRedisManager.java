@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /***
+ * 自定义redis缓存管理器， 注入shiro web管理器用于对session缓存管理
  **@project: base
  **@description:
  **@Author: twj
@@ -45,9 +46,6 @@ public class ShiroRedisManager implements Destroyable, CacheManager {
      *
      * @param <K>
      * @param <V>
-     * @author xxx
-     * @date 2018年2月1日
-     * @time 22:32:11
      */
 
     class ShiroRedisCache<K, V> implements org.apache.shiro.cache.Cache<K, V> {

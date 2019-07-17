@@ -5,19 +5,21 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.*;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -32,8 +34,8 @@ public class ShiroController {
 
 //    @Autowired
 //    RestTemplate restTemplate;
-//
-//
+
+
 //    @RequestMapping("/v2")
 //    public ResponseEntity v2(HttpServletRequest request){
 //        System.out.println(request.getSession());
@@ -49,6 +51,7 @@ public class ShiroController {
 
     /****
      * session共享示例。 在rest请求中通过请求头传递session，另一端通过这个请求头去redis中拿session的信息
+     * 真实中可以通过拦截器去查redis里面是否有这个session，有就允许访问，没有就禁止访问
      * @param request
      * @return
      */
@@ -61,6 +64,11 @@ public class ShiroController {
         return values;
     }
 
+    /***
+     * admin 权限访问
+     * @param request
+     * @return
+     */
     @RequestMapping("/getInfo")
     @RequiresRoles("admin")
     public ResponseEntity getInfo(HttpServletRequest request){
@@ -79,8 +87,8 @@ public class ShiroController {
      */
     @RequestMapping("/v1")
     @RequiresGuest
-    public void v1(){
-
+    public String v1(){
+        return "you are kick out";
     }
 
 
@@ -140,7 +148,7 @@ public class ShiroController {
     }
 
     @RequestMapping("/login")
-    public ResponseEntity login(ShiroUser user, HttpServletRequest request){
+    public ResponseEntity login(ShiroUser user, HttpServletRequest request) throws AuthenticationException{
         if(StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())){
             return ResponseEntity.badRequest().body("username or password should not be null");
         }
@@ -149,14 +157,9 @@ public class ShiroController {
         if(user.getRememberMe()){
             token.setRememberMe(true);
         }
-        try{
-            subject.login(token);
-            request.getSession().setAttribute("username", user.getUsername());
-        }catch (AuthenticationException e){
-            e.printStackTrace();
-            System.out.println("authentication failed");
-            return ResponseEntity.badRequest().body("authentication failed");
-        }
+        subject.login(token);
+        request.getSession().setAttribute("username", user.getUsername());
+
         return ResponseEntity.ok("login success, you'll be redirect to homepage in 3sec");
     }
 
@@ -165,4 +168,24 @@ public class ShiroController {
         SecurityUtils.getSubject().logout();
         return ResponseEntity.ok("logout success");
     }
+
+    /***
+     * 授权
+     * @return
+     */
+//    @RequestMapping("/runnAs")
+//    public ResponseEntity runAs(){
+//
+//    }
+//
+    /***
+     * 切换
+     */
+//    @RequestMapping("/switch")
+//    public ResponseEntity switchRole(){
+//
+//    }
+
+
+
 }
