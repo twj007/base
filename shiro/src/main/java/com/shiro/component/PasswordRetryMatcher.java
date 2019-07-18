@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /***
+ * 手动注入。 shiroWebManager
  * 限制密码尝试次数
  **@project: base
  **@description:
@@ -43,7 +44,7 @@ public class PasswordRetryMatcher extends HashedCredentialsMatcher {
             count = (Integer) redisTemplate.opsForValue().get(token.getPrincipal());
             redisTemplate.opsForValue().set(token.getPrincipal(), count+1, 300, TimeUnit.SECONDS);
         }
-        if(count.intValue() > 5){
+        if(count != null && count.intValue() > 5){
             throw new LoginTooBusyException("【login failed】failed more than 5 times, this account will be denied in 5 minutes", (String)token.getPrincipal());
         }
         boolean match = super.doCredentialsMatch(token, info);

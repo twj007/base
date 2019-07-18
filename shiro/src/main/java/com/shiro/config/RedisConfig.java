@@ -53,7 +53,6 @@ public class RedisConfig {
      */
     @Bean("redisCacheManager")
     public RedisCacheManager redisCacheManager(RedisTemplate redisTemplate) {
-
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisTemplate.getConnectionFactory());
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofHours(1))

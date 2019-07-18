@@ -10,6 +10,7 @@ import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /***
  **@project: base
@@ -25,14 +27,15 @@ import java.util.*;
  **@Author: twj
  **@Date: 2019/07/17
  * 由于集成了spring-session，通过shiroredismanager直接去获取spring-session的session，不然会获取不到session
+ * 必须在登陆后请求一次才会把上一个账号给顶出去
+ * 局限性很大，如果多个应用服务的话，根本没办法扩展 -> 缓存的数据存到redis，不通过内存缓存 或者使用别的方案
  **/
 public class KickOutSessionFilter extends AccessControlFilter {
     private int maxSession;
     private boolean kickBefore;
-    private String kickoutUrl;
     private ShiroRedisManager sessionManager;
-    private Map<String, Deque<Serializable>> cache;
-
+//    private Map<String, Deque<Serializable>> cache;//使用内存缓存
+    private RedisTemplate redisTemplate;
 
     public void setSessionManager(ShiroRedisManager sessionManager) {
         this.sessionManager = sessionManager;
@@ -41,12 +44,12 @@ public class KickOutSessionFilter extends AccessControlFilter {
     public KickOutSessionFilter() {
     }
 
-    public KickOutSessionFilter(int maxSession, boolean kickBefore, String kickoutUrl, ShiroRedisManager sessionManager) {
+    public KickOutSessionFilter(int maxSession, boolean kickBefore, ShiroRedisManager sessionManager, RedisTemplate redisTemplate) {
         this.maxSession = maxSession;
         this.kickBefore = kickBefore;
-        this.kickoutUrl = kickoutUrl;
         this.sessionManager = sessionManager;
-        this.cache = new HashMap<>();
+//        this.cache = new HashMap<>();
+        this.redisTemplate = redisTemplate;
     }
 
     public void setMaxSession(int maxSession) {
@@ -56,11 +59,6 @@ public class KickOutSessionFilter extends AccessControlFilter {
 
     public void setKickBefore(boolean kickBefore) {
         this.kickBefore = kickBefore;
-    }
-
-
-    public void setKickoutUrl(String kickoutUrl) {
-        this.kickoutUrl = kickoutUrl;
     }
 
 
@@ -75,27 +73,29 @@ public class KickOutSessionFilter extends AccessControlFilter {
         Subject subject = getSubject(request, response);
         Session session = subject.getSession();
         String username = request.getParameter("username");
-        Serializable sessionId = "spring:session:sessions:"+session.getId();
+        String sessionId = "spring:session:sessions:"+session.getId();
 
-        //TODO 同步控制
-        Deque<Serializable> deque = cache.get(username);
-        if(deque == null) {
-            deque = new LinkedList<Serializable>();
-            cache.put(username, deque);
-        }
+//        //TODO 同步控制
+//        Deque<Serializable> deque = cache.get(username);
+//        if(deque == null) {
+//            deque = new LinkedList<Serializable>();
+//            cache.put(username, deque);
+//        }
 
-        //如果队列里没有此sessionId，且用户没有被踢出；放入队列
-        if(!deque.contains(sessionId) && session.getAttribute("kickout") == null) {
-            deque.push(sessionId);
+        List<String> online = redisTemplate.opsForList().range("online:"+username, 0, redisTemplate.opsForList().size("online:"+username));
+
+        //如果队列里没有此sessionId，且用户没有被踢出；放入队列,且用户通过验证
+        if((online == null || !online.contains(sessionId)) && ((ShiroRedisManager.ShiroRedisCache) sessionManager.getCache(sessionId.toString())).get("kickout") == null && subject.isAuthenticated()) {
+            redisTemplate.opsForList().rightPush("online:"+username, sessionId);
         }
-        Serializable kickoutSessionId = null;
+        String kickoutSessionId = null;
         //如果队列里的sessionId数超出最大会话数，开始踢人
-        if (deque.size() > maxSession) {
+        if (redisTemplate.opsForList().size("online:"+username) > maxSession) {
 
             if(kickBefore) { //如果踢出后者
-                kickoutSessionId = deque.removeLast();
+                kickoutSessionId = (String) redisTemplate.opsForList().leftPop("online:"+username);
             } else { //否则踢出前者
-                kickoutSessionId = deque.removeFirst();
+                kickoutSessionId = (String) redisTemplate.opsForList().rightPop("online:"+username);
             }
             try {
                 ShiroRedisManager.ShiroRedisCache cache = (ShiroRedisManager.ShiroRedisCache) sessionManager.getCache(kickoutSessionId.toString());

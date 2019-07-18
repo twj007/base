@@ -25,6 +25,7 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.servlet.*;
 import java.io.IOException;
@@ -102,23 +103,29 @@ public class ShiroConfig {
      */
     @Bean
     ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("webSecurityManager") DefaultWebSecurityManager webSecurityManager,
-                                                  @Qualifier("shiroRedisManager") ShiroRedisManager sessionManager){
+                                                  @Qualifier("shiroRedisManager") ShiroRedisManager sessionManager,
+                                                  @Qualifier("redisTemplate") RedisTemplate redisTemplate){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(webSecurityManager);
         //拦截器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+        //配置filterMap的时候，范围大的放在后面，不然会被覆盖权限
         filterChainDefinitionMap.put("/", "anon");
+        filterChainDefinitionMap.put("/v1", "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login", "anon,kickout");
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/admin", "authc,roles[admin]");
         filterChainDefinitionMap.put("/**", "authc,kickout");
+
         // 添加自己的过滤器并且取名
         Map<String, Filter> filterMap = new HashMap<>(16);
 //        filterMap.put("forceLogout", new ForceLogoutFilter());
-        filterMap.put("kickout", new KickOutSessionFilter(1, true, "/v1", sessionManager));
+        filterMap.put("kickout", new KickOutSessionFilter(1, true, sessionManager, redisTemplate));
         shiroFilterFactoryBean.setFilters(filterMap);
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        shiroFilterFactoryBean.setLoginUrl("/toLogin");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/unAuthorized");
         return shiroFilterFactoryBean;
     }
 

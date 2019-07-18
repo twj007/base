@@ -1,25 +1,27 @@
 package com.shiro.api;
 
 import com.shiro.model.ShiroUser;
+import org.apache.oltu.oauth2.client.OAuthClient;
+import org.apache.oltu.oauth2.client.URLConnectionClient;
+import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
+import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.client.response.OAuthAccessTokenResponse;
+import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
+import org.apache.oltu.oauth2.common.OAuth;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.*;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -147,26 +149,51 @@ public class ShiroController {
         return "python programmer";
     }
 
+    /****
+     * 这边再登陆完成后需要再次请求一次才会把另一个请求顶掉（前端强制成功后跳转）
+     * @param user
+     * @param request
+     * @return
+     * @throws AuthenticationException
+     */
     @RequestMapping("/login")
-    public ResponseEntity login(ShiroUser user, HttpServletRequest request) throws AuthenticationException{
+    public ResponseEntity login(ShiroUser user, HttpServletRequest request, HttpServletResponse response) throws AuthenticationException{
         if(StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())){
             return ResponseEntity.badRequest().body("username or password should not be null");
         }
         Subject subject = SecurityUtils.getSubject();
+        if(subject.isAuthenticated()){
+            return ResponseEntity.ok("已登录");
+        }
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
         if(user.getRememberMe()){
             token.setRememberMe(true);
         }
         subject.login(token);
         request.getSession().setAttribute("username", user.getUsername());
-
+        response.addHeader("refresh", "3;url='/success'");
         return ResponseEntity.ok("login success, you'll be redirect to homepage in 3sec");
+    }
+
+    @RequestMapping("/success")
+    public void success(){
+
     }
 
     @RequestMapping("/logout")
     public ResponseEntity logout(){
         SecurityUtils.getSubject().logout();
         return ResponseEntity.ok("logout success");
+    }
+
+    @RequestMapping("/toLogin")
+    public ResponseEntity toLogin(){
+        return ResponseEntity.ok("请登陆");
+    }
+
+    @RequestMapping("/unAuthorized")
+    public ResponseEntity unAnthorized(){
+        return ResponseEntity.ok("没有权限");
     }
 
     /***
@@ -186,6 +213,47 @@ public class ShiroController {
 //
 //    }
 
+
+
+    @Value("${oauth2.client.id}")
+    private String clientId;
+
+    @Value("${oauth2.client.secret}")
+    private String secret;
+
+    /***
+     * 集成oauth2 登陆github
+     */
+    @RequestMapping("/oauth2")
+    public ResponseEntity oauth2(HttpServletRequest request){
+        try {
+
+            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+
+            OAuthClientRequest accessTokenRequest = OAuthClientRequest
+                    .tokenLocation("https://github.com/login/oauth/access_token")
+                    .setGrantType(GrantType.AUTHORIZATION_CODE)
+                    .setClientId(clientId)
+                    .setClientSecret(secret)
+                    .setRedirectURI("/getInfo")
+                    .buildQueryMessage();
+
+            Object oAuthResponse = oAuthClient.accessToken(accessTokenRequest, OAuth.HttpMethod.POST, OAuthAccessTokenResponse.class);
+
+//            String accessToken = oAuthResponse.getAccessToken();
+//            Long expiresIn = oAuthResponse.getExpiresIn();
+//
+//            OAuthClientRequest userInfoRequest = new OAuthBearerClientRequest("https://api.github.com/user")
+//                    .setAccessToken(accessToken).buildQueryMessage();
+//
+//            OAuthResourceResponse resourceResponse = oAuthClient.resource(userInfoRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+//            String username = resourceResponse.getBody();
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

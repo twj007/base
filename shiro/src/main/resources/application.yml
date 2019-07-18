@@ -1,4 +1,7 @@
-
+oauth2:
+  client:
+    id: a1543a1290dbbcd80cfa
+    secret: dc5b0bc2706e0c7abd917f596d8d0fb1353002e1
 #spring:
 #  application:
 #    name: mall-web
