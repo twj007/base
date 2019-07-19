@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class WebService {
 
-    @Autowired
+    @Autowired(required = false)
     private WebDao webDao;
 
     public String test(){

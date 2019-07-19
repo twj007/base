@@ -1,26 +1,17 @@
-package com.shiro.component;
+package com.framework.web.component;
 
-import com.shiro.model.ShiroUser;
-import com.shiro.utils.KickOutException;
-
-import org.apache.shiro.cache.Cache;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.DefaultSessionKey;
-import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
-import org.apache.shiro.web.util.WebUtils;
 import org.json.JSONObject;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /***
  **@project: base

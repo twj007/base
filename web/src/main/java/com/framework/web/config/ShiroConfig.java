@@ -1,15 +1,12 @@
-package com.shiro.config;
+package com.framework.web.config;
 
-import com.shiro.component.*;
+import com.framework.web.component.KickOutSessionFilter;
+import com.framework.web.component.PasswordRealm;
+import com.framework.web.component.PasswordRetryMatcher;
+import com.framework.web.component.ShiroRedisManager;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.credential.PasswordService;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.mgt.RememberMeManager;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.mgt.SessionsSecurityManager;
-import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
@@ -27,8 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.servlet.*;
-import java.io.IOException;
+import javax.servlet.Filter;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -44,7 +40,7 @@ import java.util.Map;
 public class ShiroConfig {
 
     @Bean("myRealm")
-    PasswordRealm myRealm(@Qualifier("shiroRedisManager")ShiroRedisManager shiroRedisManager,
+    PasswordRealm myRealm(@Qualifier("shiroRedisManager") ShiroRedisManager shiroRedisManager,
                           @Qualifier("hashedCredentialsMatcher")HashedCredentialsMatcher matcher){
 
         PasswordRealm realm = new PasswordRealm();
@@ -54,7 +50,7 @@ public class ShiroConfig {
         realm.setAuthenticationCachingEnabled(true);
         realm.setAuthenticationCacheName("Authentication");
         realm.setAuthorizationCacheName("Authorization");
-        realm.setCredentialsMatcher(matcher);
+//        realm.setCredentialsMatcher(matcher);
         return realm;
     }
 
