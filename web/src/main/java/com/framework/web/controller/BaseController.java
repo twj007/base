@@ -1,6 +1,7 @@
 package com.framework.web.controller;
 
 import com.framework.web.pojo.TokenUser;
+import org.apache.oltu.oauth2.client.HttpClient;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -9,9 +10,6 @@ import org.apache.oltu.oauth2.client.response.OAuthAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParser;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 public class BaseController {
@@ -79,9 +79,44 @@ public class BaseController {
         OAuthResourceResponse resourceResponse = oAuthClient.resource(
                 userInfoRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         String username = resourceResponse.getBody();
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(username, accessToken.toCharArray());
-        subject.login(token);
+//        Subject subject = SecurityUtils.getSubject();
+//        UsernamePasswordToken token = new UsernamePasswordToken(username, accessToken.toCharArray());
+//        subject.login(token);
         return ResponseEntity.ok(accessToken+":"+username);
+    }
+
+
+
+
+    @RequestMapping("/github")
+    public void toGitHub(HttpServletResponse response) throws IOException{
+        StringBuffer sb = new StringBuffer();
+        sb.append("https://github.com/login/oauth/authorize?")
+                .append("client_id="+clientId)
+                .append("&scope=user,public_repo");
+
+        response.sendRedirect(sb.toString());
+    }
+
+    @RequestMapping("/getGithubAccessToken")
+    public ResponseEntity<String> getGithubAccessToken(HttpServletRequest request) throws Exception{
+        String tokenUrl = "https://github.com/login/oauth/access_token";
+        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+        OAuthClientRequest accessTokenRequest = OAuthClientRequest
+                .tokenLocation(tokenUrl) //获取token的url
+                .setClientId(clientId)
+                .setClientSecret(secret) // client id 以及密钥
+                .setCode(request.getParameter("code"))
+                 // 授权码以及重定向的url
+                .buildQueryMessage();
+        //获取access token
+        accessTokenRequest.addHeader("Accept", "application/json");
+        accessTokenRequest.addHeader("Content-Type", "application/json");
+
+        OAuthAccessTokenResponse oAuthResponse =
+                oAuthClient.accessToken(accessTokenRequest, OAuth.HttpMethod.POST);
+        String accessToken = oAuthResponse.getAccessToken();
+        Long expiresIn = oAuthResponse.getExpiresIn();
+        return ResponseEntity.ok(accessToken);
     }
 }
