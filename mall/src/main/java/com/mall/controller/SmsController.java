@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 /***
@@ -75,39 +76,52 @@ public class SmsController {
 
     @GetMapping("/flashPromotion")
     public ResultBody<String> flashPromotion(SmsFlashPromotionProductRelation product){
-        logger.info("【miaosha】 userId: {} productId: {}", product.getUserId(), product.getProductId());
+        logger.info("【秒杀】 userId: {} productId: {}", product.getUserId(), product.getProductId());
         Lock lock = redissonClient.getLock(key);
         //tryLock一定要加解锁时间，不然可能死锁
         //if(lock.tryLock()){
+        try {
+            if (lock.tryLock(100, TimeUnit.MILLISECONDS)) {
+                RBucket<Integer> bucket = redissonClient.getBucket(String.valueOf(product.getProductId()));
+                try{
+                    int num = bucket.get();
+                    if (num > 0) {
+                        RSet<Long> products = redissonClient.getSet("user_" + String.valueOf(product.getUserId()));
+                        if (products != null && products.contains(product.getProductId())) {
+                            logger.info("【redis】 该用户已秒杀该产品");
+                            return Results.BAD__REQUEST.result("您已秒杀该产品", null);
+                        } else {
+                            //扣减库存
+                            bucket.set(num - 1);
+                            //写入用户明细
+                            products.add(product.getProductId());
 
-            lock.lock();
-            RBucket<Integer> bucket = redissonClient.getBucket(String.valueOf(product.getProductId()));
-            Integer nums = bucket.get();
-            if(nums > 0){
-                RSet<Long> products =  redissonClient.getSet("user_"+String.valueOf(product.getUserId()));
-                if(products != null && products.contains(product.getProductId())){
-                    logger.info("【redis】 该用户已秒杀该产品");
+                            product.setFlashPromotionCount(num - 1);
+                            producer.send(product);
+
+                            logger.info("【redisson】 秒杀成功， 等待生成订单");
+                            return Results.SUCCESS.result("秒杀成功", null);
+
+                        }
+                    } else {
+                        logger.info("【redisson】 库存不足");
+                        return Results.BAD__REQUEST.result("库存不足", null);
+                    }
+                }catch (Exception e){
+                    logger.error("【exception】 msg:{}", e.getStackTrace());
+                    return Results.BAD__REQUEST.result("系统繁忙，请刷新重试", null);
+                }finally {
                     lock.unlock();
-                    return Results.BAD__REQUEST.result("您已秒杀该产品", null);
-                }else{
-                    //扣减库存
-                    bucket.set(nums - 1);
-                    //写入用户明细
-                    products.add(product.getProductId());
-
-                    product.setFlashPromotionCount(nums.intValue() - 1);
-                    producer.send(product);
-
-                    logger.info("【redisson】 秒杀成功， 等待生成订单");
-                    lock.unlock();
-                    return Results.SUCCESS.result("秒杀成功", null);
-
                 }
             }else{
-                logger.info("【redisson】 库存不足");
-                lock.unlock();
-                return Results.BAD__REQUEST.result("库存不足", null);
+                logger.info("【秒杀】获取锁失败");
+                return Results.BAD__REQUEST.result("系统繁忙，请刷新重试", null);
             }
+        }catch(InterruptedException e) {
+            logger.error("【秒杀】线程中断:{}", e.getStackTrace());
+            return Results.BAD__REQUEST.result("系统繁忙，请刷新重试", null);
+
+        }
 
 //        }else{
 //            logger.error("【lock】 获取锁失败");

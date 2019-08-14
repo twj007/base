@@ -1,6 +1,8 @@
 package com.framework.web.controller;
 
+import com.framework.web.pojo.CodeModel;
 import com.framework.web.pojo.TokenUser;
+import com.framework.web.util.QRCodeUtil;
 import org.apache.oltu.oauth2.client.HttpClient;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
@@ -19,8 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -86,6 +91,24 @@ public class BaseController {
     }
 
 
+    @RequestMapping("/getUserInfo")
+    public ResponseEntity getUserInfo(HttpServletRequest request) throws Exception{
+        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+        String accessToken = request.getHeader("token");
+        OAuthClientRequest userInfoRequest =
+                new OAuthBearerClientRequest(userInfoUrl)
+                        .setAccessToken(accessToken).buildQueryMessage();
+        OAuthResourceResponse resourceResponse = oAuthClient.resource(
+                userInfoRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+        return ResponseEntity.ok(resourceResponse.getBody());
+    }
+
+
+    @RequestMapping("/testHead")
+    public ResponseEntity testHead(HttpServletRequest request){
+        String val = request.getHeader("SESSION");
+        return ResponseEntity.ok(val);
+    }
 
 
     @RequestMapping("/github")
@@ -109,7 +132,7 @@ public class BaseController {
                 .setCode(request.getParameter("code"))
                  // 授权码以及重定向的url
                 .buildQueryMessage();
-        //获取access token
+        //获取access token 可返回 query string, json, xml
         accessTokenRequest.addHeader("Accept", "application/json");
         accessTokenRequest.addHeader("Content-Type", "application/json");
 
@@ -117,6 +140,28 @@ public class BaseController {
                 oAuthClient.accessToken(accessTokenRequest, OAuth.HttpMethod.POST);
         String accessToken = oAuthResponse.getAccessToken();
         Long expiresIn = oAuthResponse.getExpiresIn();
+        System.out.println(expiresIn);
         return ResponseEntity.ok(accessToken);
+    }
+
+
+    @RequestMapping("/testQRCode")
+    public void testQRCode(HttpServletResponse response){
+        String imgname = String.valueOf(System.currentTimeMillis()) + ".png";
+        CodeModel info = new CodeModel();
+        info.setContents("客户:倍特 品牌:倍特 型号:XH001 日期:2018-06-19 检验员:易工");
+        info.setWidth(300);
+        info.setHeight(300);
+        info.setFontSize(16);
+        //info.setLogoFile(new File("F:\\软件安全下载目录\\personnelManage\\" + imgname));
+        info.setDesc("玫瑰之约");
+        info.setDate("2018-06-19");
+        info.setLogoFile(null);
+        BufferedImage img = QRCodeUtil.createCodeImage(info);
+        try {
+            ImageIO.write(img, "png", response.getOutputStream());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

@@ -38,6 +38,12 @@ public class RabbitController {
     @Value("${spring.redis.lock.key}")
     private String key;
 
+    @GetMapping("/delay")
+    public void delay(){
+        rabbitProducer.sendOrder(123);
+    }
+
+
     @GetMapping("/index")
     public ResultBody<Object> index(String item_id){
         RReadWriteLock lock = redissonClient.getReadWriteLock(key);

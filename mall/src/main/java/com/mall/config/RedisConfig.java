@@ -32,7 +32,7 @@ public class RedisConfig {
 
     /***
      * 主从复制下配置
-     * redis.conf 中，要开启 cluster-enabled yes 此时无法使用 slaveof 主从复制
+     * redis.conf 中，要开启 cluster-enabled yes(因为开启的是集群模式) 此时无法使用 slaveof 主从复制
      * @return
      */
     @Bean

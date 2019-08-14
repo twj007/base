@@ -76,6 +76,7 @@ public class ShiroController {
         String sessionId = request.getHeader("Cookie");
         List values = redisTemplate.opsForHash().values("spring:session:sessions:"+sessionId);
         return values;
+
     }
 
     /***

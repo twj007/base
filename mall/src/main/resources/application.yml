@@ -102,6 +102,11 @@ spring:
 
   mvc:
     static-path-pattern: /static/**
+  mail:
+    host: smtp.163.com
+    username: 18779156726@163.com
+    password: jientank8316800
+    protocol: smtp
 #  timeout duration:
 #  *    "PT20.345S" -- parses as "20.345 seconds"
 #  *    "PT15M"     -- parses as "15 minutes" (where a minute is 60 seconds)
@@ -133,3 +138,9 @@ mybatis:
 #    aggressive-lazy-loading: false
 #    lazy-load-trigger-methods: 在调用什么方法时是懒加载的
 #=====================================
+
+
+
+
+
+

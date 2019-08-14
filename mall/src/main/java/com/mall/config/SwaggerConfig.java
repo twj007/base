@@ -14,6 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  **@description: api  document
  **@Author: twj
  **@Date: 2019/06/20
+ * /swagger-ui.html
  **/
 @Configuration
 public class SwaggerConfig {

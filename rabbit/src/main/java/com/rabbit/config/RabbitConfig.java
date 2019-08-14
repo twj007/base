@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /***
  **@project: base
  **@description: config of rabbit
@@ -93,8 +96,17 @@ public class RabbitConfig {
     }
 
     @Bean
+    public Queue queueTTL(){
+        Map args = new HashMap<>();
+        args.put("x-message-ttl", 1000*10);
+        args.put("x-dead-letter-exchange", directExchange());
+        args.put("x-dead-letter-routing-key", binding());
+        return new Queue(RabbitConfig.QUEUE_A, true, false, false, args);//持久化队列
+    }
+
+    @Bean
     public Queue queue(){
-        return new Queue(RabbitConfig.QUEUE_A, true);//持久化队列
+        return new Queue(RabbitConfig.QUEUE_A, true);
     }
 
     @Bean

@@ -18,6 +18,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = WebApplication.class)
 @AutoConfigureMockMvc
@@ -43,6 +48,8 @@ public class WebApplicationTest {
 
     @Test
     public void test() throws Exception {
+
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/test"))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         int status = result.getResponse().getStatus();
@@ -52,6 +59,7 @@ public class WebApplicationTest {
 
     @Test
     public void testService() throws Exception{
+
         Assert.assertEquals("ok", webService.test());
     }
 

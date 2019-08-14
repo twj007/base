@@ -2257,7 +2257,7 @@
     </column>
     <column id="465" parent="247" name="admin_pwd">
       <Position>34</Position>
-      <Comment>后台密码 </Comment>
+      <Comment>后台密码</Comment>
       <DataType>varchar(255)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
@@ -2499,7 +2499,7 @@
     </column>
     <column id="502" parent="252" name="Black_intermediary">
       <Position>4</Position>
-      <Comment>黑中介分数 </Comment>
+      <Comment>黑中介分数</Comment>
       <DataType>varchar(255)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
