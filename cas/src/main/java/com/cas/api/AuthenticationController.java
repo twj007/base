@@ -2,6 +2,7 @@ package com.cas.api;
 
 import com.cas.dao.UserRepository;
 import com.cas.dto.SysUser;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -9,12 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 
 /***
  **@project: base
@@ -31,8 +35,8 @@ public class AuthenticationController {
     private UserRepository repository;
 
 
-    @PostMapping("/login")
-    public Object login(@RequestHeader HttpHeaders httpHeaders) {
+    @PostMapping({"/login", "/haha"})
+    public ResponseEntity<SysUser> login(@RequestHeader HttpHeaders httpHeaders) {
         log.info("Rest api login.");
         log.debug("request headers: " + httpHeaders);
         SysUser user = null;
@@ -45,7 +49,7 @@ public class AuthenticationController {
             }
 
             //尝试查找用户库是否存在
-            user = repository.findByUsername(userTemp.username);
+            user = repository.findSysUserByUsername(userTemp.username);
             if (user != null) {
                 if (!user.getPassword().equals(userTemp.password)) {
                     //密码不匹配
@@ -73,7 +77,7 @@ public class AuthenticationController {
         }
         log.info("[{" + user.getUsername() + "}] login is ok");
         //成功返回json
-        return user;
+        return ResponseEntity.ok(user);
     }
 
 
@@ -114,5 +118,27 @@ public class AuthenticationController {
             this.username = username;
             this.password = password;
         }
+    }
+
+    @RequestMapping("/test")
+    public ResponseEntity test(Date date){
+        System.out.println(date);
+        return ResponseEntity.ok(date);
+    }
+
+    @RequestMapping("/test2")
+    public ResponseEntity test2(@RequestParam LocalDate date){
+        System.out.println(date);
+        return ResponseEntity.ok(date.toString());
+    }
+    @RequestMapping("/test3")
+    public ResponseEntity test3(@RequestParam LocalDateTime date){
+        System.out.println(date);
+        return ResponseEntity.ok(Date.from(date.toInstant(ZoneOffset.UTC)));
+    }
+    @RequestMapping("/test4")
+    public ResponseEntity test4(@RequestParam LocalTime date){
+        System.out.println(date);
+        return ResponseEntity.ok(date.toString());
     }
 }

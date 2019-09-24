@@ -17,6 +17,8 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.apache.shiro.web.filter.authz.SslFilter;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
@@ -116,7 +118,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/auth", "anon");
         filterChainDefinitionMap.put("/getUserInfo", "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
-        filterChainDefinitionMap.put("/login", "anon,kickout");
+        filterChainDefinitionMap.put("/login", "anon,ssl,kickout");
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/admin", "authc,roles[admin]");
         filterChainDefinitionMap.put("/**", "authc,kickout");
@@ -125,6 +127,9 @@ public class ShiroConfig {
         Map<String, Filter> filterMap = new HashMap<>(16);
 //        filterMap.put("forceLogout", new ForceLogoutFilter());
         filterMap.put("kickout", new KickOutSessionFilter(1, true, sessionManager, redisTemplate));
+        filterMap.put("authc", new FormAuthenticationFilter());
+        SslFilter ssl = new SslFilter(); ssl.setPort(8443);
+        filterMap.put("ssl", ssl);
         shiroFilterFactoryBean.setFilters(filterMap);
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         shiroFilterFactoryBean.setLoginUrl("/toLogin");

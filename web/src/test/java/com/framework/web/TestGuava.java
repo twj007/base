@@ -27,7 +27,7 @@ public class TestGuava {
         //testNull();
         //testPreCondition(1.0f);
         //testOrdering();
-        //testObjects();
+        testObjects();
         //testRange();
 //        testThrowables();
         ArrayList l = new ArrayList(Arrays.asList(1, 3, 4, 5));
@@ -146,7 +146,7 @@ public class TestGuava {
         Object b = null;
         System.out.println("equals" + Objects.equals(a, b));
         System.out.println("non null Object" + Objects.nonNull(a));
-        System.out.println("is null Object" + Objects.isNull(b));
+        System.out.println("it's null Object" + Objects.isNull(b));
         System.out.println("全null返回true，有一个为null返回false， 对于数组有深层的元素比较" + Objects.deepEquals(a, b));
         System.out.println("对多个元素返回hashcode" + Objects.hash(a, b));
         System.out.println(Objects.requireNonNull(a, "the object should not be null"));

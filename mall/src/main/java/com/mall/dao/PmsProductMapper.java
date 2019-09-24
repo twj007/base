@@ -43,4 +43,6 @@ public interface PmsProductMapper {
      * @mbggenerated
      */
     int updateByPrimaryKey(PmsProduct record);
+
+    void recod();
 }

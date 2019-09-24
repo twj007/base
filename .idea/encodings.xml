@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Poi" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cas" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cos" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/es" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/file" charset="UTF-8" />
@@ -16,5 +18,6 @@
     <file url="file://$PROJECT_DIR$/rabbit-consumer" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/shiro" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/web" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/web/app2" charset="UTF-8" />
   </component>
 </project>

@@ -70,7 +70,15 @@ public class RabbitProducer implements RabbitTemplate.ConfirmCallback {
 
     public void sendEmail(Object obj){
         logger.info("【send email】: {}", obj);
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_B, "", obj);
+        CorrelationData data = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_MAIL, RabbitConfig.ROUTINGKEY_MAIL, obj, data);
+    }
+
+
+
+    public void sendMessage(Object obj){
+        logger.info("【生产消息】:{}", obj);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_A, RabbitConfig.ROUTINGKEY_A, obj);
     }
 
 

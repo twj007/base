@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 
 /***
@@ -52,6 +54,22 @@ public class SmsController {
     @Autowired
     private ISmsService smsService;
 
+    private AtomicInteger count = new AtomicInteger(0);
+
+    @GetMapping("/count")
+    public ResponseEntity count(){
+
+        producer.sendMessage(count.getAndIncrement());
+        return ResponseEntity.ok("ok");
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity sendMail(String email){
+        producer.sendEmail(email);
+        return ResponseEntity.ok("发送中请稍候");
+    }
+
+
     /***
      * 获取全部秒杀活动
      * @return
@@ -61,6 +79,9 @@ public class SmsController {
     public ResultBody<List<SmsFlashPromotion>> getFlashActivities(){
         return Results.SUCCESS.result("ok", smsService.getAllFlashActivities());
     }
+
+
+
 
     /***
      * 获取单个秒杀活动
@@ -76,33 +97,38 @@ public class SmsController {
 
     @GetMapping("/flashPromotion")
     public ResultBody<String> flashPromotion(SmsFlashPromotionProductRelation product){
-        logger.info("【秒杀】 userId: {} productId: {}", product.getUserId(), product.getProductId());
+        //logger.info("【秒杀】 userId: {} productId: {}", product.getUserId(), product.getProductId());
+        logger.info("【秒杀】 productId: {}",  product.getProductId());
         Lock lock = redissonClient.getLock(key);
         //tryLock一定要加解锁时间，不然可能死锁
         //if(lock.tryLock()){
         try {
-            if (lock.tryLock(100, TimeUnit.MILLISECONDS)) {
+//            if (lock.tryLock(2000, TimeUnit.MILLISECONDS)) {
+            lock.lock();
                 RBucket<Integer> bucket = redissonClient.getBucket(String.valueOf(product.getProductId()));
                 try{
                     int num = bucket.get();
                     if (num > 0) {
                         RSet<Long> products = redissonClient.getSet("user_" + String.valueOf(product.getUserId()));
-                        if (products != null && products.contains(product.getProductId())) {
-                            logger.info("【redis】 该用户已秒杀该产品");
-                            return Results.BAD__REQUEST.result("您已秒杀该产品", null);
-                        } else {
+//                        if (products != null && products.contains(product.getProductId())) {
+//                            logger.info("【redis】 该用户已秒杀该产品");
+//                            return Results.BAD__REQUEST.result("您已秒杀该产品", null);
+//                        } else {
                             //扣减库存
                             bucket.set(num - 1);
                             //写入用户明细
                             products.add(product.getProductId());
 
                             product.setFlashPromotionCount(num - 1);
-                            producer.send(product);
-
+                            //异步保存数据
+                            //producer.send(product);
+                            //同步保存数据
+                            smsService.recod();
                             logger.info("【redisson】 秒杀成功， 等待生成订单");
+                            logger.info("【数量】: {}", count.getAndIncrement());
                             return Results.SUCCESS.result("秒杀成功", null);
 
-                        }
+//                        }
                     } else {
                         logger.info("【redisson】 库存不足");
                         return Results.BAD__REQUEST.result("库存不足", null);
@@ -113,11 +139,11 @@ public class SmsController {
                 }finally {
                     lock.unlock();
                 }
-            }else{
-                logger.info("【秒杀】获取锁失败");
-                return Results.BAD__REQUEST.result("系统繁忙，请刷新重试", null);
-            }
-        }catch(InterruptedException e) {
+//            }else{
+//                logger.info("【秒杀】获取锁失败");
+//                return Results.BAD__REQUEST.result("系统繁忙，请刷新重试", null);
+//            }
+        }catch(Exception e) {
             logger.error("【秒杀】线程中断:{}", e.getStackTrace());
             return Results.BAD__REQUEST.result("系统繁忙，请刷新重试", null);
 

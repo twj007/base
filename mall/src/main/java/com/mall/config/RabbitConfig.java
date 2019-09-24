@@ -1,6 +1,7 @@
 package com.mall.config;
 
 
+import com.mall.component.RabbitProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
@@ -51,6 +52,10 @@ public class RabbitConfig {
     public static final String ROUTINGKEY_C = "spring-boot-routingKey_C";
 
 
+    public static final String MAIL_QUEUE = "MAIL_QUEUE";
+    public static final String EXCHANGE_MAIL = "MQ_EXCHANGE_MAIL";
+    public static final String ROUTINGKEY_MAIL = "ROUTINGKEY_MAIL";
+
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host, port);
@@ -90,6 +95,9 @@ public class RabbitConfig {
     }
 
     @Bean
+    public DirectExchange directExchangeMail(){return new DirectExchange(RabbitConfig.EXCHANGE_MAIL);}
+
+    @Bean
     public Queue queue(){
         return new Queue(RabbitConfig.QUEUE_A, true);//持久化队列
     }
@@ -103,6 +111,9 @@ public class RabbitConfig {
     public Queue queueC(){
         return new Queue(RabbitConfig.QUEUE_C, true);
     }
+
+    @Bean
+    public Queue queueMail(){return new Queue(RabbitConfig.MAIL_QUEUE, true);}
 
     /***
      * 绑定队列到交换机（默认）
@@ -123,6 +134,9 @@ public class RabbitConfig {
         return BindingBuilder.bind(queueC()).to(fanoutExchange());
     }
 
+
+    @Bean
+    public Binding bindingMail(){return BindingBuilder.bind(queueMail()).to(directExchangeMail()).with(RabbitConfig.ROUTINGKEY_MAIL);}
     /***
      * 第二种处理消息的方式
      * @return

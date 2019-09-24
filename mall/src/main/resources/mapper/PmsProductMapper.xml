@@ -171,4 +171,8 @@
     detail_desc, detail_html, detail_mobile_html
     from pms_product
   </select>
+
+  <insert id="recod">
+      insert into recod(count) values (1)
+  </insert>
 </mapper>

@@ -5,6 +5,7 @@ import com.mall.dao.SmsFlashPromotionMapper;
 import com.mall.pojo.PmsProduct;
 import com.mall.pojo.SmsFlashPromotion;
 import com.mall.service.ISmsService;
+import com.mall.util.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -47,5 +48,11 @@ public class SmsService implements ISmsService {
     @Override
     public Long createFlashPromotionOrder(SmsFlashPromotion smsFlashPromotion) {
         return null;
+    }
+
+    @Override
+    @DataSource
+    public void recod() {
+        pmsProductMapper.recod();
     }
 }

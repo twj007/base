@@ -56,15 +56,15 @@ public class EncryptUtils {
     }
 
 
-    public static void main(String[] args) {
-        List<Integer> body = Arrays.asList(1, 2, 3);
-        String token = EncryptUtils.encode(body, "twj", "subject");
-        System.out.println(token);
-        System.out.println(EncryptUtils.getIssuer(token));
-
-
-
-    }
+//    public static void main(String[] args) {
+//        List<Integer> body = Arrays.asList(1, 2, 3);
+//        String token = EncryptUtils.encode(body, "twj", "subject");
+//        System.out.println(token);
+//        System.out.println(EncryptUtils.getIssuer(token));
+//
+//
+//
+//    }
 /***********************************************************************
  *
  *             J W T
@@ -339,6 +339,10 @@ public class EncryptUtils {
      ************************************************************/
 
     private static final String HEXDIGITS[] = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
+
+    public static void main(String[] args) {
+        System.out.println(MD5Encode("123456", "UTF-8"));
+    }
 
     /**
      * MD5加密

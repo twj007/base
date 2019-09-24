@@ -14,4 +14,6 @@ public interface ISmsService {
     Boolean updateFlashPromotion(SmsFlashPromotion product);
 
     Long createFlashPromotionOrder(SmsFlashPromotion product);
+
+    void recod();
 }

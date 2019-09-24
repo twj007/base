@@ -15,10 +15,13 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParser;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
@@ -41,16 +44,16 @@ public class BaseController {
         return new ModelAndView("/4xx");
     }
 
-    private String accessTokenURL = "http://localhost:8082/accessToken";
+    private String accessTokenURL = "http://tu:8080/accessToken";
 
-    private String userInfoUrl = "http://localhost:8082/getUserInfo";
+    private String userInfoUrl = "http://tu:8080/getUserInfo";
 
-    private String redirectUrl = "http:localhost:8083/test";
+    private String redirectUrl = "http:tu:8083/test";
 
-    @Value("${oauth2.client.id}")
+//    @Value("${oauth2.client.id}")
     private String clientId;
 
-    @Value("${oauth2.client.secret}")
+//    @Value("${oauth2.client.secret}")
     private String secret;
 
     /***
@@ -164,4 +167,62 @@ public class BaseController {
             e.printStackTrace();
         }
     }
+
+
+
+    @RequestMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        // session失效
+        request.getSession().invalidate();
+        response.sendRedirect("https://tu:8443/cas/logout");
+    }
+    /**
+     * 用户登出，并重定向回来
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/logout2")
+    public void logout2(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        // session失效
+        request.getSession().invalidate();
+        response.sendRedirect("http://tu:8443/cas/logout?service=http://tu:8080/logout/success");
+    }
+    /**
+     * 登出成功回调
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/logout/success")
+    public String logoutPage(){
+        return "登出成功，跳转登出页面";
+    }
+
+
+    @RequestMapping("/rest/user")
+    public ResponseEntity userOption(HttpServletRequest request){
+
+//        if(bindingResult.hasErrors()){
+//            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+//        }
+        String method = request.getMethod();
+        if(HttpMethod.GET.matches(method)){
+            // do something
+            return ResponseEntity.ok("Get Request");
+        }else if(HttpMethod.POST.matches(method)){
+            //
+            return ResponseEntity.ok("Post Request");
+        }else if(HttpMethod.PUT.matches(method)){
+            //
+            return ResponseEntity.ok("Put Request");
+        }else if(HttpMethod.DELETE.matches(method)){
+            //
+            return ResponseEntity.ok("Delete Request");
+        }
+
+        return ResponseEntity.notFound().build();
+
+    }
+
+
 }

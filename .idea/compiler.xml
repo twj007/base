@@ -6,6 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="app2" />
+        <module name="cas" />
         <module name="cos" />
         <module name="es" />
         <module name="file" />
@@ -18,7 +20,6 @@
         <module name="rabbit" />
         <module name="rabbitconsumer" />
         <module name="shiro" />
-        <module name="web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

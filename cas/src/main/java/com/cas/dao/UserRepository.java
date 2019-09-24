@@ -3,6 +3,8 @@ package com.cas.dao;
 import com.cas.dto.SysUser;
 import org.springframework.data.repository.Repository;
 
+import java.util.Map;
+
 /***
  **@project: base
  **@description:
@@ -12,5 +14,7 @@ import org.springframework.data.repository.Repository;
 @org.springframework.stereotype.Repository
 public interface UserRepository extends Repository<SysUser, Long> {
 
-    SysUser findByUsername(String username);
+    SysUser findSysUserByUsername(String username);
+
+
 }

@@ -46,7 +46,9 @@ public class RedisConfig {
         config.useReplicatedServers()
                 .addNodeAddress(nodez)
                 .setPassword(password)
-                .setScanInterval(20000);
+                .setScanInterval(20000)
+                .setPingConnectionInterval(600000)
+                .setTimeout(10000);
         return Redisson.create(config);
     }
 
