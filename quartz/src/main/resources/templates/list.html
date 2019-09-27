@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="Zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.15.4/bootstrap-table.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.15.4/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.15.4/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.24.0/locale/zh-cn.js"></script>
+    <link href="https://cdn.bootcss.com/layer/2.3/skin/layer.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+</head>
+
+<title>任务列表</title>
+<body>
+    <div class="panel panel-default">
+        <div class="panel-header"></div>
+        <div class="panel-body">
+            <div class="toolbar">
+                <span id="schedulerStatus"></span>
+                <button id="scheduler" class="btn btn-primary" onclick="switchScheduler()" attr="running">挂起调度器</button>
+                <button id="schedulerAdd" style="float: right; margin-right: 50px;" class="btn btn-success" onclick="addScheduler()">新增</button>
+            </div>
+            <table class="bootstrap-table" id="quartz-table">
+            </table>
+        </div>
+    </div>
+<script>
+    $(function(){
+        $.ajax({
+            url: "/quartz/status",
+            success: function(data){
+                if(data){
+                    $("#schedulerStatus").text("调度器运行中");
+                    $("#scheduler").attr("attr", "running");
+                }else{
+                    $("#schedulerStatus").text("调度器暂停中");
+                    $("#scheduler").attr("attr", "closed");
+                }
+
+            }
+        });
+        $("#quartz-table").bootstrapTable({
+            url: '/quartz/list',
+            pagination: false,
+            search: false,
+            columns: [{
+                field: 'group',
+                title: '分组'
+            }, {
+                field: 'name',
+                title: 'job'
+            }, {
+                field: 'description',
+                title: '描述'
+            }, {
+                field: 'cronExpression',
+                title: 'cron表达式'
+            }, {
+                field: 'nextExecuteTime',
+                title: '下次执行时间',
+                formatter: function(val){
+                    return moment(val).format("YYYY-MM-DD hh:mm:ss");
+                }
+            }, {
+                field: 'state',
+                title: '状态',
+                formatter: function(value){
+                    var htm = "";
+                    switch(value){
+                        case "NONE": htm = '不存在'; break;
+                        case "NORMAL": htm = '正常'; break;
+                        case "PAUSED": htm = '<p style="color: red;">暂停</p>'; break;
+                        case "COMPLETE": htm = '完成'; break;
+                        case "ERROR": htm = '异常'; break;
+                        case "BLOCKED": htm = '阻塞'; break;
+                        default: break;
+                    }
+                    return htm;
+                }
+            }, {
+                field: 'operation',
+                title: '操作',
+                escape: true,
+                formatter: function(value, row, index){
+
+                    return ['<button class="btn-sm btn-success" onclick="ops('+pause+', \''+row.name+'\', \''+index+'\')">暂停</button>&nbsp;' +
+                           '<button class="btn-sm btn-success" onclick="ops('+resume+', \''+row.name+'\', \''+index+'\')">恢复</button>&nbsp;' +
+                           '<button class="btn-sm btn-danger" onclick="ops('+del+', \''+row.name+'\', \''+index+'\')">删除</button>'].join('');
+                }
+            }]
+        });
+
+    });
+    var pause = "pause";
+    var resume = "resume";
+    var del = "del";
+
+    function ops(action, jobKey, index) {
+        console.log(action);
+        var status = $("#scheduler").attr("attr");
+        if(status != "running"){
+            alert("调度器已关闭，请先开启调度器");
+            return;
+        }
+        switch(action){
+            case "pause":
+                $.ajax({
+                    url: "/quartz/job/pause/"+jobKey,
+                    success: function(data){
+                        alert(data);
+                        $("#quartz-table").bootstrapTable('updateCell', {index: index, row: {state: "暂停"}});
+                        $("#quartz-table").bootstrapTable('refresh');
+                    }
+                });
+                break;
+            case "resume":
+                $.ajax({
+                    url: "/quartz/job/start/"+jobKey,
+                    success: function(data){
+                        alert(data);
+                        $("#quartz-table").bootstrapTable('updateCell', {index: index, row: {state: "正常"}});
+                        $("#quartz-table").bootstrapTable('refresh');
+                    }
+                });
+                break;
+            case "del":
+                $.ajax({
+                    url: "/quartz/job/delete/"+jobKey,
+                    success: function(data){
+                        alert(data);
+                        $("#quartz-table").bootstrapTable('refresh');
+                    }
+                });
+                break;
+            default:
+                alert("非法操作！");
+                break;
+        }
+    }
+
+    function switchScheduler(){
+        var status = $("#scheduler").attr("attr");
+        switch(status){
+            case "running":
+                $.ajax({
+                    url: "/quartz/shutdown",
+                    success: function(data){
+                        alert(data);
+                        $("#schedulerStatus").text("调度器已暂停");
+                        $("#scheduler").attr("attr", "closed");
+                        $("#scheduler").text("开启调度器");
+                    }
+                });
+                break;
+            default:
+                $.ajax({
+                    url: "/quartz/resume",
+                    success: function(data){
+                        alert(data);
+                        $("#schedulerStatus").text("调度器已启动");
+                        $("#scheduler").attr("attr", "running");
+                        $("#scheduler").text("暂停调度器");
+                    }
+                });
+                break;
+        }
+
+    }
+    function addScheduler(){
+        layer.open({
+            type: 2,
+            title: '增加job',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['380px', '90%'],
+            content: '/quartz/add/page'
+        });
+    }
+
+</script>
+</body>
+</html>
+
+
+
+

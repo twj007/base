@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
+import org.quartz.Trigger;
 
 import java.util.Date;
 
@@ -29,4 +30,6 @@ public class ScheduleJob {
 	private boolean shouldRecover;
 	private transient JobKey key;
 	private String cronExpression;
+	private Date nextExecuteTime;
+	private String state;
 }
