@@ -1,12 +1,15 @@
 package com.quartz.configuration;
 
+import com.quartz.component.LogInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -33,5 +36,14 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         super.addResourceHandlers(registry);
         registry.addResourceHandler("/**").addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX, "/static/");
         registry.addResourceHandler("/**").addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX, "/templates/");
+    }
+
+    @Autowired
+    private LogInterceptor logInterceptor;
+
+    @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        super.addInterceptors(registry);
+        registry.addInterceptor(logInterceptor);
     }
 }

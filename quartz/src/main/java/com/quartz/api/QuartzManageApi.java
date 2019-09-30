@@ -7,19 +7,29 @@ import com.quartz.dto.ScheduleJob;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.QuartzServer;
+import org.quartz.impl.calendar.CronCalendar;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.CronTriggerImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /***
  **@project: base
@@ -28,8 +38,8 @@ import java.util.List;
  **@Date: 2019/09/26
  **/
 @RestController
-//@RequestMapping(value = "/",  produces = { "application/json;charset=UTF-8" })
 public class QuartzManageApi {
+
 
     @Autowired
     private Scheduler scheduler;
@@ -141,6 +151,9 @@ public class QuartzManageApi {
     @RequestMapping("/job/delete/{jobKey}")
     public ResponseEntity deleteJob(@PathVariable("jobKey")String jobKey){
         try {
+            if(!scheduler.checkExists(JobKey.jobKey(jobKey))){
+                return ResponseEntity.ok("该job不存在，请刷新重试");
+            }
             if(scheduler.deleteJob(JobKey.jobKey(jobKey))){
                 return ResponseEntity.ok("删除成功");
             }else{
@@ -177,6 +190,21 @@ public class QuartzManageApi {
         }
     }
 
+    @RequestMapping("/job/add/page")
+    public ModelAndView addJobPage(ModelAndView mav){
+        mav.setViewName("/add");
+        return mav;
+    }
+
+    @RequestMapping("/job/add")
+    public ResponseEntity addJob(@Valid ScheduleJob scheduleJob, BindingResult result){
+        if(result.hasErrors()){
+            return ResponseEntity.ok(result.getAllErrors());
+        }
+
+        return null;
+    }
+
     @RequestMapping("/add")
     public ResponseEntity add() throws SchedulerException {
         JobDetail jobDetail = new JobDetailImpl();
@@ -193,4 +221,58 @@ public class QuartzManageApi {
         return ResponseEntity.ok("create success");
 
     }
+
+    @RequestMapping("/job/edit/{jobKey}")
+    public ModelAndView toCronPage(@PathVariable("jobKey")String jobKey, ModelAndView modelAndView) throws SchedulerException {
+        JobDetailImpl jobDetail = (JobDetailImpl) scheduler.getJobDetail(JobKey.jobKey(jobKey));
+        Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(jobKey));
+        String cron = ((CronTriggerImpl)trigger).getCronExpression();
+        ScheduleJob scheduleJob = new ScheduleJob();
+        scheduleJob.setCronExpression(cron);
+        BeanUtils.copyProperties(jobDetail, scheduleJob);
+        modelAndView.setViewName("/edit");
+        modelAndView.addObject("job", scheduleJob);
+        return modelAndView;
+    }
+
+    @RequestMapping("/job/edit/save/{jobKey}")
+    public ResponseEntity saveEdit(@PathVariable("jobKey")String jobKey, @RequestBody ScheduleJob scheduleJob) throws SchedulerException, ParseException {
+        JobDetailImpl jobDetail = (JobDetailImpl) scheduler.getJobDetail(JobKey.jobKey(jobKey));
+        CronTriggerImpl trigger = (CronTriggerImpl)scheduler.getTrigger(TriggerKey.triggerKey(jobKey));
+        jobDetail.setDescription(scheduleJob.getDescription());
+        trigger.setCronExpression(scheduleJob.getCronExpression());
+        scheduler.deleteJob(JobKey.jobKey(jobKey));
+        scheduler.addJob(jobDetail, true);
+        scheduler.rescheduleJob(trigger.getKey(), trigger);
+        return ResponseEntity.ok("保存成功");
+    }
+
+    @RequestMapping("/job/checkCron")
+    public ResponseEntity checkCron(@RequestParam("cron")String cron) throws ParseException {
+        List<String> result = new ArrayList<String>();
+        if (cron == null || cron.length() < 1) {
+            return ResponseEntity.ok(result);
+        } else {
+            CronExpression exppression = new CronExpression(cron);
+            DateTimeFormatter formatter =  DateTimeFormatter.ofLocalizedDateTime( FormatStyle.FULL )
+                    .withLocale( Locale.CHINA )
+                    .withZone( ZoneId.systemDefault());
+            Date nowaDate = new Date();
+            for(int i = 0; i < 10; i++){
+                nowaDate = exppression.getNextValidTimeAfter(nowaDate);
+                result.add(formatter.format(nowaDate.toInstant()));
+            }
+
+            return ResponseEntity.ok(result);
+        }
+
+    }
+
+    @RequestMapping("/cron/page")
+    public ModelAndView toCronPage(ModelAndView modelAndView){
+        modelAndView.setViewName("/cron");
+        return modelAndView;
+    }
+
+
 }

@@ -30,6 +30,7 @@
     </div>
 <script>
     $(function(){
+
         $.ajax({
             url: "/quartz/status",
             success: function(data){
@@ -89,7 +90,8 @@
 
                     return ['<button class="btn-sm btn-success" onclick="ops('+pause+', \''+row.name+'\', \''+index+'\')">暂停</button>&nbsp;' +
                            '<button class="btn-sm btn-success" onclick="ops('+resume+', \''+row.name+'\', \''+index+'\')">恢复</button>&nbsp;' +
-                           '<button class="btn-sm btn-danger" onclick="ops('+del+', \''+row.name+'\', \''+index+'\')">删除</button>'].join('');
+                           '<button class="btn-sm btn-danger" onclick="ops('+del+', \''+row.name+'\', \''+index+'\')">删除</button>&nbsp;' +
+                           '<button class="btn-sm btn-primary" onclick="ops(\'edit\', \''+row.name+'\', \''+index+'\')">编辑</button>'].join('');
                 }
             }]
         });
@@ -103,7 +105,7 @@
         console.log(action);
         var status = $("#scheduler").attr("attr");
         if(status != "running"){
-            alert("调度器已关闭，请先开启调度器");
+            layer.alert("调度器已关闭，请先开启调度器");
             return;
         }
         switch(action){
@@ -111,7 +113,7 @@
                 $.ajax({
                     url: "/quartz/job/pause/"+jobKey,
                     success: function(data){
-                        alert(data);
+                        layer.alert(data);
                         $("#quartz-table").bootstrapTable('updateCell', {index: index, row: {state: "暂停"}});
                         $("#quartz-table").bootstrapTable('refresh');
                     }
@@ -121,7 +123,7 @@
                 $.ajax({
                     url: "/quartz/job/start/"+jobKey,
                     success: function(data){
-                        alert(data);
+                        layer.alert(data);
                         $("#quartz-table").bootstrapTable('updateCell', {index: index, row: {state: "正常"}});
                         $("#quartz-table").bootstrapTable('refresh');
                     }
@@ -131,13 +133,23 @@
                 $.ajax({
                     url: "/quartz/job/delete/"+jobKey,
                     success: function(data){
-                        alert(data);
+                        layer.alert(data);
                         $("#quartz-table").bootstrapTable('refresh');
                     }
                 });
                 break;
+            case "edit":
+                layer.open({
+                    type: 2,
+                    title: '编辑job',
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['80%', '100%'],
+                    content: '/quartz/job/edit/'+jobKey
+                });
+                break;
             default:
-                alert("非法操作！");
+                layer.alert("非法操作！");
                 break;
         }
     }
@@ -149,7 +161,7 @@
                 $.ajax({
                     url: "/quartz/shutdown",
                     success: function(data){
-                        alert(data);
+                        layer.alert(data);
                         $("#schedulerStatus").text("调度器已暂停");
                         $("#scheduler").attr("attr", "closed");
                         $("#scheduler").text("开启调度器");
@@ -160,7 +172,7 @@
                 $.ajax({
                     url: "/quartz/resume",
                     success: function(data){
-                        alert(data);
+                        layer.alert(data);
                         $("#schedulerStatus").text("调度器已启动");
                         $("#scheduler").attr("attr", "running");
                         $("#scheduler").text("暂停调度器");
@@ -175,9 +187,9 @@
             type: 2,
             title: '增加job',
             shadeClose: true,
-            shade: 0.8,
-            area: ['380px', '90%'],
-            content: '/quartz/add/page'
+            shade: [0.3, '#eee'],
+            area: ['80%', '100%'],
+            content: '/quartz/job/add/page'
         });
     }
 

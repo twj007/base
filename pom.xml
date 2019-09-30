@@ -24,6 +24,7 @@
         <module>oauthServer</module>
         <module>cas</module>
         <module>app2</module>
+        <module>quartz</module>
     </modules>
 
     <!-- 第一步：添加Springboot的parent -->
