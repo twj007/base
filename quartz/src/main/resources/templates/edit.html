@@ -5,6 +5,8 @@
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/layer/2.3/skin/layer.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
 </head>
 
 <body>
@@ -12,13 +14,13 @@
         <div class="form-group">
             <label for="group" class="col-sm-2 control-label">分组</label>
             <div class="col-sm-9">
-                <input th:value="${job?.group}" disabled type="text" class="form-control" name="group" id="group">
+                <input th:value="${job?.group}" readonly type="text" class="form-control" name="group" id="group">
             </div>
         </div>
         <div class="form-group">
             <label for="name" class="col-sm-2 control-label">job名称</label>
             <div class="col-sm-9">
-                <input th:value="${job?.name}" disabled type="text" class="form-control" name="name" id="name">
+                <input th:value="${job?.name}" readonly type="text" class="form-control" name="name" id="name">
             </div>
         </div>
         <div class="form-group">
@@ -53,19 +55,22 @@
         });
         $("#save").on('click', function(e){
             e.preventDefault();
+            console.log(this);
+            //$("#cronExpression").val($("#cron").val());
             var form_data = $('#edit-form').serialize();
             $("#cronExpression").val(window.document.getElementById('cronPage').contentDocument.getElementById('cron').value);
             $.ajax({
-                url: '/quartz/job/save/'+$('#name').val(),
+                url: '/quartz/job/edit/save',
                 data: form_data,
                 dataType: 'json',
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    layer.alert(data);
+                    console.log(data);
+                    window.location.reload();
                 },
                 error: function(e){
-                    layer.alert(e);
+                    console.log(e);
                 }
             });
         });

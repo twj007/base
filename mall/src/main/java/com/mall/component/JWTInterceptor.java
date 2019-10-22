@@ -23,21 +23,24 @@ public class JWTInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-        String token = request.getHeader("token");
-        if(EncryptUtils.verify(token)){
-            return super.preHandle(request, response, handler);
-        }else{
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json; charset=utf-8");
-            PrintWriter out = response.getWriter();
-            Map<String, String> res = new HashMap<>();
-            res.put("msg", "验证失败，请重新登陆");
-            res.put("code", "500");
-            String result = JSONUtils.toJSONString(res);
-            out.append(result);
-            return false;
-        }
+        return true;
+//        if(request.getRequestURI().indexOf("test") != -1){
+//            return true;
+//        }
+//        String token = request.getHeader("token");
+//        if(EncryptUtils.verify(token)){
+//            return super.preHandle(request, response, handler);
+//        }else{
+//            response.setCharacterEncoding("UTF-8");
+//            response.setContentType("application/json; charset=utf-8");
+//            PrintWriter out = response.getWriter();
+//            Map<String, String> res = new HashMap<>();
+//            res.put("msg", "验证失败，请重新登陆");
+//            res.put("code", "500");
+//            String result = JSONUtils.toJSONString(res);
+//            out.append(result);
+//            return false;
+//        }
     }
 
     @Override

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -17,15 +18,16 @@
         <module name="oauthServer" />
         <module name="pay" />
         <module name="Poi" />
+        <module name="quartz" />
         <module name="rabbit" />
         <module name="rabbitconsumer" />
+        <module name="shardingjdbcdemo" />
         <module name="shiro" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="groovy" target="1.8" />
       <module name="Poi" target="1.8" />
-      <module name="small" target="1.8" />
-      <module name="springSecurity" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

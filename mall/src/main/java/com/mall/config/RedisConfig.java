@@ -1,12 +1,23 @@
 package com.mall.config;
 
+import com.mall.component.MessageListener;
 import org.redisson.Redisson;
+import org.redisson.RedissonTopic;
+import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
+import org.redisson.codec.SerializationCodec;
 import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.Topic;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 
 /***
@@ -30,13 +41,13 @@ public class RedisConfig {
     @Value("${spring.redis.password}")
     private String password;
 
-    /***
+  /***
      * 主从复制下配置
      * redis.conf 中，要开启 cluster-enabled yes(因为开启的是集群模式) 此时无法使用 slaveof 主从复制
      * @return
      */
-    @Bean
-    RedissonClient redissonClient(){
+    @Bean("redisson")
+    RedissonClient redissonClient(MessageListener messageListener){
         Config config = new Config();
         String[] nodez = nodes.split(",");
         for(int i = 0; i < nodez.length; i++){
@@ -49,7 +60,10 @@ public class RedisConfig {
                 .setScanInterval(20000)
                 .setPingConnectionInterval(600000)
                 .setTimeout(10000);
-        return Redisson.create(config);
+        RedissonClient client =  Redisson.create(config);
+        RTopic topic = client.getTopic("queue", new SerializationCodec());
+        topic.addListener(messageListener);
+        return client;
     }
 
     /**

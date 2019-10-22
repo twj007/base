@@ -2,12 +2,14 @@ package com.quartz.configuration;
 
 import com.mysql.jdbc.Blob;
 import com.quartz.component.MyCornJob;
+import com.quartz.proxy.StdSchedulerFactoryProxy;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.EverythingMatcher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.util.ResourceUtils;
@@ -27,12 +29,23 @@ public class QuartzConfiguration {
 
     @Bean
     Scheduler scheduler(SchedulerFactoryBean factory, @Qualifier("cronJob")JobDetail cronJob) throws SchedulerException {
-
         Scheduler scheduler = factory.getScheduler();
         scheduler.addJob(cronJob, true);
         return scheduler;
     }
 
+    @Bean
+    SchedulerFactory factory(){
+        return new StdSchedulerFactoryProxy();
+    }
+
+    @Bean
+    @Primary
+    SchedulerFactoryBean schedulerFactoryBean(SchedulerFactory s){
+        SchedulerFactoryBean factoryBean = new SchedulerFactoryBean();
+        factoryBean.setSchedulerFactory(s);
+        return factoryBean;
+    }
 
     // 使用jobDetail包装job
 //    @Bean

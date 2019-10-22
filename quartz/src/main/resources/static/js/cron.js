@@ -80,7 +80,9 @@ $(function() {
         }
     });
     var h = $("#cron");
-    h.change(function(e) {
+    h.on("change", function(e) {
+
+        e.preventDefault();
         e.stopPropagation();
         btnFan();
         $.ajax({
@@ -105,6 +107,7 @@ $(function() {
     });
     var g = $("input[name^='v_']");
     g.change(function(e) {
+        e.stopPropagation();
         var l = [];
         g.each(function() {
             l.push(this.value)

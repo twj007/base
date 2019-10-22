@@ -20,6 +20,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -39,6 +44,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.0.1</version>
+        </dependency>
         <!--
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -53,7 +63,9 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
+            <version>5.1.47</version>
         </dependency>-->
+
 
         <!-- mybatis
         <dependency>
@@ -95,11 +107,30 @@
             <artifactId>javase</artifactId>
             <version>3.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <!--<dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>3.5.0</version>
         </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web-services</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+            <version>3.2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
 

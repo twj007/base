@@ -1,28 +1,19 @@
 package com.quartz.api;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.quartz.component.MyJob;
 import com.quartz.dto.ScheduleJob;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
-import org.quartz.impl.QuartzServer;
-import org.quartz.impl.calendar.CronCalendar;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.CronTriggerImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.validation.Valid;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -235,15 +226,35 @@ public class QuartzManageApi {
         return modelAndView;
     }
 
-    @RequestMapping("/job/edit/save/{jobKey}")
-    public ResponseEntity saveEdit(@PathVariable("jobKey")String jobKey, @RequestBody ScheduleJob scheduleJob) throws SchedulerException, ParseException {
-        JobDetailImpl jobDetail = (JobDetailImpl) scheduler.getJobDetail(JobKey.jobKey(jobKey));
-        CronTriggerImpl trigger = (CronTriggerImpl)scheduler.getTrigger(TriggerKey.triggerKey(jobKey));
-        jobDetail.setDescription(scheduleJob.getDescription());
-        trigger.setCronExpression(scheduleJob.getCronExpression());
-        scheduler.deleteJob(JobKey.jobKey(jobKey));
-        scheduler.addJob(jobDetail, true);
-        scheduler.rescheduleJob(trigger.getKey(), trigger);
+    @RequestMapping("/job/edit/save")
+    public ResponseEntity saveEdit(String group, String name, String description, String cronExpression) throws SchedulerException, ParseException {
+//        JobDetailImpl jobDetail = (JobDetailImpl) scheduler.getJobDetail(JobKey.jobKey(name));
+//        CronTriggerImpl trigger = (CronTriggerImpl)scheduler.getTrigger(TriggerKey.triggerKey(name));
+//        jobDetail.setDescription(description);
+//        trigger.setCronExpression(cronExpression);
+//        scheduler.rescheduleJob(trigger.getKey(), trigger);
+
+//        return ResponseEntity.ok("保存成功");
+        /** 方式一 ：调用 rescheduleJob 开始 */
+
+        TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
+        // 触发器名,触发器组
+        triggerBuilder.withIdentity(name, group);
+        triggerBuilder.startNow();
+        // 触发器时间设定
+        triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(cronExpression));
+        // 创建Trigger对象
+        CronTrigger trigger = (CronTrigger) triggerBuilder.build();
+        // 方式一 ：修改一个任务的触发时间
+        scheduler.rescheduleJob(TriggerKey.triggerKey(name), trigger);
+        /** 方式一 ：调用 rescheduleJob 结束 */
+
+        /** 方式二：先删除，然后在创建一个新的Job  */
+        //JobDetail jobDetail = sched.getJobDetail(JobKey.jobKey(jobName, jobGroupName));
+        //Class<? extends Job> jobClass = jobDetail.getJobClass();
+        //removeJob(jobName, jobGroupName, triggerName, triggerGroupName);
+        //addJob(jobName, jobGroupName, triggerName, triggerGroupName, jobClass, cron);
+        /** 方式二 ：先删除，然后在创建一个新的Job */
         return ResponseEntity.ok("保存成功");
     }
 

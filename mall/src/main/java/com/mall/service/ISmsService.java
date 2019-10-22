@@ -1,7 +1,7 @@
 package com.mall.service;
 
-import com.mall.pojo.PmsProduct;
 import com.mall.pojo.SmsFlashPromotion;
+import com.mall.pojo.SmsFlashPromotionProductRelation;
 
 import java.util.List;
 
@@ -16,4 +16,10 @@ public interface ISmsService {
     Long createFlashPromotionOrder(SmsFlashPromotion product);
 
     void recod();
+
+    int cancelOrder(SmsFlashPromotionProductRelation message);
+
+    void saveOrder(SmsFlashPromotionProductRelation product);
+
+    SmsFlashPromotionProductRelation getOrder(SmsFlashPromotionProductRelation product);
 }

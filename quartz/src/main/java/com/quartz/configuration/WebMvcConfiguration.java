@@ -1,6 +1,7 @@
 package com.quartz.configuration;
 
 import com.quartz.component.LogInterceptor;
+import org.quartz.core.JobRunShell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.context.annotation.Configuration;
@@ -46,4 +47,5 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         super.addInterceptors(registry);
         registry.addInterceptor(logInterceptor);
     }
+
 }

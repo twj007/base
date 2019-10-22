@@ -20,13 +20,16 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -59,6 +62,23 @@ public class MvcConfiguration extends WebMvcConfigurationSupport {
         registry.addConverter(timeConverter());
         super.addFormatters(registry);
     }
+
+    @Bean
+    public HttpMessageConverter<String> responseBodyConverter() {
+        StringHttpMessageConverter converter = new StringHttpMessageConverter(
+                Charset.forName("UTF-8"));
+        return converter;
+    }
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        super.configureMessageConverters(converters);
+        converters.add(responseBodyConverter());
+    }
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.favorPathExtension(false);
+    }
+
 
     /***
      * 线程不安全的转换器

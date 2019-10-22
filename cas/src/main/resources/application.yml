@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: quartz
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
@@ -8,5 +6,16 @@ spring:
     url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC
   jpa:
     show-sql: true
+  redis:
+    cluster:
+      nodes: 127.0.0.1:6380,127.0.0.1:6381
+    #    port: 6379
+    #    host: 127.0.0.1
+    #    timeout: PT1M
+    lock:
+      key: miaosha
+    password: 123456
+
+
 server:
   port: 8081

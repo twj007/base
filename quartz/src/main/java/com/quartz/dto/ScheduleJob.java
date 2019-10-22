@@ -20,7 +20,6 @@ import java.util.Date;
 @Setter
 @ToString
 public class ScheduleJob {
-
 	private String name;
 	private String group;
 	private String description;

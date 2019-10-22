@@ -1,6 +1,8 @@
 package com.mall.dao;
 
 import com.mall.pojo.PmsProduct;
+import com.mall.pojo.SmsFlashPromotionProductRelation;
+
 import java.util.List;
 
 public interface PmsProductMapper {
@@ -45,4 +47,5 @@ public interface PmsProductMapper {
     int updateByPrimaryKey(PmsProduct record);
 
     void recod();
+
 }

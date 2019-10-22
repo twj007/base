@@ -44,13 +44,16 @@ public class RabbitReceiver {
     private JavaMailSender javaMailSender;
 
     @RabbitListener(queues = RabbitConfig.QUEUE_A)
-    public void consume(String msg) {
+    @DataSource
+    public void consume(SmsFlashPromotionProductRelation msg) {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        logger.info("【消费消息】；{}", msg);
-        logger.info("【消费时间】:{}", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        //同步保存数据
+        relationMapper.saveOrder(msg);
+        logger.info(Thread.currentThread().getName()+" 【消费消息】；product: {}, user: {}", msg.getProductId(), msg.getUserId());
+        logger.info(Thread.currentThread().getName()+" 【消费时间】:{}", stopwatch.elapsed(TimeUnit.MILLISECONDS));
     }
 
-    @DataSource(type = "master")
+    @DataSource
     @RabbitListener(queues = RabbitConfig.MAIL_QUEUE)
     public void process(String target) throws MessagingException {
 //        select pp.name, p.title, r.flash_promotion_price

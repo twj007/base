@@ -45,4 +45,10 @@ public interface SmsFlashPromotionProductRelationMapper {
     int updateByPrimaryKey(SmsFlashPromotionProductRelation record);
 
     void saveDetail(SmsFlashPromotionProductRelation product);
+
+    int saveOrder(SmsFlashPromotionProductRelation msg);
+
+    int cancelOrder(SmsFlashPromotionProductRelation message);
+
+    SmsFlashPromotionProductRelation getOrder(SmsFlashPromotionProductRelation productRelation);
 }

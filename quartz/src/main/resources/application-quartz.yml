@@ -18,8 +18,9 @@ spring:
             threadCount: 10
             threadPriority: 5
             threadsInheritContextClassLoaderOfInitializingThread: true
+
     #数据库方式
     job-store-type: jdbc
       #初始化表结构
-#    jdbc:
-#      initialize-schema: always
+    jdbc:
+      initialize-schema: always

@@ -1,14 +1,20 @@
 package com.mall.config;
 
 import com.mall.component.JWTInterceptor;
+import com.mall.component.RequestCounterInterceptor;
 import com.mall.component.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +36,24 @@ public class MvcConfig extends WebMvcConfigurationSupport {
     @Autowired
     private RequestInterceptor requestInterceptor;
 
+    @Autowired
+    private RequestCounterInterceptor counterInterceptor;
+
+    @Bean
+    public HttpMessageConverter<String> responseBodyConverter() {
+        StringHttpMessageConverter converter = new StringHttpMessageConverter(
+                Charset.forName("UTF-8"));
+        return converter;
+    }
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        super.configureMessageConverters(converters);
+        converters.add(responseBodyConverter());
+    }
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.favorPathExtension(false);
+    }
 
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -47,9 +71,11 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         if(excludePath == null || excludePath.size() == 0){
             registry.addInterceptor(jwtInterceptor).addPathPatterns("/**");
             registry.addInterceptor(requestInterceptor).addPathPatterns("/**");
+            registry.addInterceptor(counterInterceptor).addPathPatterns("/**");
         }else{
             registry.addInterceptor(jwtInterceptor).addPathPatterns("/**").excludePathPatterns(excludePath);
             registry.addInterceptor(requestInterceptor).addPathPatterns("/**").excludePathPatterns(excludePath);
+            registry.addInterceptor(counterInterceptor).addPathPatterns("/**");
         }
         super.addInterceptors(registry);
     }

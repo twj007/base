@@ -1,21 +1,16 @@
-package com.framework.web;
+package com.framework.web
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.Ordered
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.Map;
+
 
 @SpringBootApplication
-public class WebApplication {
+class WebApplication {
 
     /*************************************   SSO配置-开始   ************************************************/
 
@@ -151,7 +146,7 @@ public class WebApplication {
      * 设定首页
      */
     @Configuration
-    public class DefaultView extends WebMvcConfigurerAdapter {
+    class DefaultView extends WebMvcConfigurerAdapter {
 
         @Override
         public void addViewControllers(ViewControllerRegistry registry) {
@@ -166,7 +161,7 @@ public class WebApplication {
         }
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);
     }
 }

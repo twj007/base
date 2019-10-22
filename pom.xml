@@ -14,7 +14,6 @@
         <module>front</module>
         <module>pay</module>
         <module>Poi</module>
-        <module>Poi</module>
         <module>rabbit</module>
         <module>rabbit-consumer</module>
         <module>mybatis_senior</module>
@@ -25,6 +24,7 @@
         <module>cas</module>
         <module>app2</module>
         <module>quartz</module>
+        <module>shardingjdbc-demo</module>
     </modules>
 
     <!-- 第一步：添加Springboot的parent -->

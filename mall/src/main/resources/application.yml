@@ -14,7 +14,6 @@ project:
       tables: /index,/login,/register,/homepage
 server:
   port: 8081
-
 spring:
   application:
     name: mall-web
@@ -102,6 +101,8 @@ spring:
 
   mvc:
     static-path-pattern: /static/**
+    async:
+      request-timeout: 60S
   mail:
     host: smtp.163.com
     username: 18779156726@163.com

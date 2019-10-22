@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -24,6 +25,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableAspectJAutoProxy
 @EnableSwagger2
 @EnableWebMvc
+@EnableScheduling
 public class MallApplication {
 
     public static void main(String[] args) {

@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /***
  **@project: base

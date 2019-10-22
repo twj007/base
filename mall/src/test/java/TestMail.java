@@ -1,10 +1,12 @@
+
 import com.google.common.base.Stopwatch;
 import com.mall.MallApplication;
 import com.mall.component.RabbitProducer;
-import com.mall.pojo.SerizableMimeMessage;
-import com.sun.mail.util.MimeUtil;
-import jodd.util.StringUtil;
+import com.mall.dao.SmsFlashPromotionProductRelationMapper;
+import com.mall.pojo.SmsFlashPromotionProductRelation;
+import javafx.scene.paint.Stop;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,16 +17,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StopWatch;
 
-import javax.activation.DataHandler;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimePart;
-import javax.mail.util.ByteArrayDataSource;
-import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /***
@@ -70,28 +65,79 @@ public class TestMail {
 
     private volatile AtomicInteger count = new AtomicInteger(0);
 
+    @Autowired
+    private SmsFlashPromotionProductRelationMapper relationMapper;
+
+//    @Test
+//    public void testOrder(){
+//        Stopwatch stopWatch = Stopwatch.createStarted();
+//        SmsFlashPromotionProductRelation r = new SmsFlashPromotionProductRelation();
+//        r.setUserId(123L);
+//        r.setProductId(4L);
+//        int count = relationMapper.saveOrder(r);
+//        Assert.assertNotEquals(0, count);
+//
+//    }
     @Test
-    public void testSend() throws InterruptedException{
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        CountDownLatch downLatch = new CountDownLatch(1000);
-        Semaphore semaphore = new Semaphore(100);
-        ExecutorService service = Executors.newCachedThreadPool();
-        for(int i = 0; i < 1000; i++, downLatch.countDown()){
-            service.execute(()->{
-                try{
-                    semaphore.acquire();
-                    rabbitProducer.sendMessage(count.get());
-                    count.getAndIncrement();
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }finally {
-                    semaphore.release();
-                }
-
-
-            });
-        }
-        downLatch.await();
-        System.out.println("【used time】："+ stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    public void testUpdateOrder(){
+        Stopwatch stopWatch = Stopwatch.createStarted();
+        SmsFlashPromotionProductRelation r = new SmsFlashPromotionProductRelation();
+        r.setUserId(7806L);
+        r.setProductId(4L);
+        r.setStatus("3");
+        int count = relationMapper.cancelOrder(r);
+        Assert.assertNotEquals(0, count);
+        SmsFlashPromotionProductRelation r2 = new SmsFlashPromotionProductRelation();
+        r2.setId(5411L);
+        r2.setStatus("3");
+        int count2 = relationMapper.cancelOrder(r2);
+        Assert.assertNotEquals(0, count2);
     }
+
+//    @Test
+//    public void testSelectOrder(){
+//        Stopwatch stopwatch = Stopwatch.createStarted();
+//        SmsFlashPromotionProductRelation r = new SmsFlashPromotionProductRelation();
+//        r.setId(5409L);
+//        r = relationMapper.getOrder(r);
+//        System.out.println(r);
+//        Assert.assertSame(4l, r.getProductId());
+//        Assert.assertSame( 7806l, r.getUserId());
+//        System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
+//    }
+
+//    @Test
+//    public void testCancelOrder(){
+//        Stopwatch stopwatch = Stopwatch.createStarted();
+//        SmsFlashPromotionProductRelation r = new SmsFlashPromotionProductRelation();
+//        r.setProductId(4L);
+//        r.setUserId(6964L);
+//        int num = relationMapper.cancelOrder(r);
+//        Assert.assertNotEquals(0L, num);
+//    }
+
+//    @Test
+//    public void testSend() throws InterruptedException{
+//        Stopwatch stopwatch = Stopwatch.createStarted();
+//        CountDownLatch downLatch = new CountDownLatch(1000);
+//        Semaphore semaphore = new Semaphore(100);
+//        ExecutorService service = Executors.newCachedThreadPool();
+//        for(int i = 0; i < 1000; i++, downLatch.countDown()){
+//            service.execute(()->{
+//                try{
+//                    semaphore.acquire();
+//                    rabbitProducer.sendMessage(count.get());
+//                    count.getAndIncrement();
+//                }catch (InterruptedException e){
+//                    e.printStackTrace();
+//                }finally {
+//                    semaphore.release();
+//                }
+//
+//
+//            });
+//        }
+//        downLatch.await();
+//        System.out.println("【used time】："+ stopwatch.elapsed(TimeUnit.MILLISECONDS));
+//    }
 }

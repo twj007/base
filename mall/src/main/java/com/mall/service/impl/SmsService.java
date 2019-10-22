@@ -2,8 +2,9 @@ package com.mall.service.impl;
 
 import com.mall.dao.PmsProductMapper;
 import com.mall.dao.SmsFlashPromotionMapper;
-import com.mall.pojo.PmsProduct;
+import com.mall.dao.SmsFlashPromotionProductRelationMapper;
 import com.mall.pojo.SmsFlashPromotion;
+import com.mall.pojo.SmsFlashPromotionProductRelation;
 import com.mall.service.ISmsService;
 import com.mall.util.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class SmsService implements ISmsService {
 
     @Autowired
     private PmsProductMapper pmsProductMapper;
+
+    @Autowired
+    private SmsFlashPromotionProductRelationMapper relation;
 
     @Override
     public List<SmsFlashPromotion> getAllFlashActivities() {
@@ -54,5 +58,20 @@ public class SmsService implements ISmsService {
     @DataSource
     public void recod() {
         pmsProductMapper.recod();
+    }
+
+    @Override
+    @DataSource
+    public int cancelOrder(SmsFlashPromotionProductRelation message) {
+        return relation.cancelOrder(message);
+    }
+
+    @Override
+    public void saveOrder(SmsFlashPromotionProductRelation product) {
+        relation.saveOrder(product);
+    }
+
+    public SmsFlashPromotionProductRelation getOrder(SmsFlashPromotionProductRelation productRelation) {
+        return relation.getOrder(productRelation);
     }
 }

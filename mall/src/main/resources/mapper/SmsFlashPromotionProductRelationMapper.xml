@@ -74,4 +74,25 @@
     flash_promotion_count, flash_promotion_limit, sort
     from sms_flash_promotion_product_relation
   </select>
+  <insert id="saveOrder" parameterType="com.mall.pojo.SmsFlashPromotionProductRelation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into fps_orders(create_date, amount, product_id, user_id, status) values (now(), 1, #{productId}, #{userId}, 1);
+  </insert>
+  <update id="cancelOrder" parameterType="com.mall.pojo.SmsFlashPromotionProductRelation">
+    update fps_orders o set o.status=#{status}
+      <where>
+        <if test="id != null">
+          o.id=#{id}
+        </if>
+        <if test="productId != null and userId != null">
+          and o.product_id=#{productId} and o.user_id=#{userId}
+        </if>
+      </where>
+  </update>
+  <select id="getOrder" parameterType="com.mall.pojo.SmsFlashPromotionProductRelation" resultType="com.mall.pojo.SmsFlashPromotionProductRelation">
+    select id, create_date, user_id as userId, product_id as productId, status, amount
+    from fps_orders where id=#{id}
+  </select>
 </mapper>
