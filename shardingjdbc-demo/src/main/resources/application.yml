@@ -1,6 +1,10 @@
 server:
   port: 8081
 
+leaf:
+  server:
+    url: http://47.100.206.158:8080/api/snowflake/get/test
+
 #mybatis
 mybatis:
   configuration:

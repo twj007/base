@@ -13,7 +13,7 @@ project:
     white:
       tables: /index,/login,/register,/homepage
 server:
-  port: 8081
+  port: 8080
 spring:
   application:
     name: mall-web
@@ -32,7 +32,7 @@ spring:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
       slaver:
-        url: jdbc:mysql://47.100.206.158:3306/mall?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=GMT
+        url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=GMT
         username: root
         password: 123456
         type: com.alibaba.druid.pool.DruidDataSource
@@ -139,7 +139,4 @@ mybatis:
 #    aggressive-lazy-loading: false
 #    lazy-load-trigger-methods: 在调用什么方法时是懒加载的
 #=====================================
-
-
-
 

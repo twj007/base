@@ -44,11 +44,11 @@ public class BaseController {
         return new ModelAndView("/4xx");
     }
 
-    private String accessTokenURL = "http://tu:8080/accessToken";
+    private String accessTokenURL = "http://tu:8443/accessToken";
 
-    private String userInfoUrl = "http://tu:8080/getUserInfo";
+    private String userInfoUrl = "http://tu:8443/getUserInfo";
 
-    private String redirectUrl = "http:tu:8083/test";
+    private String redirectUrl = "http:tu:8443/test";
 
 //    @Value("${oauth2.client.id}")
     private String clientId;

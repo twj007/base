@@ -7,6 +7,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +38,7 @@ public class TestController {
 
     @GetMapping("/findAll")
     public ResponseEntity<OrderPage> findAll(Integer pageSize, Integer pageNum){
-
+        log.info("[{}]: get all order by page", Thread.currentThread().getName());
         Page page = PageHelper.startPage(pageNum, pageSize);
         List<Order> orders = orderMapper.findAll();
         Long total = page.getTotal();
@@ -47,6 +48,7 @@ public class TestController {
 
     @GetMapping("/findOne")
     public ResponseEntity findOne(Order order, int pageSize, int pageNum){
+        log.info("[{}]: get one order by page", Thread.currentThread().getName());
         Page page = PageHelper.startPage(pageNum, pageSize);
         List<Order> o = orderMapper.findByOrder(order);
         Long total = page.getTotal();
@@ -57,11 +59,22 @@ public class TestController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Value("${leaf.server.url}")
+    private String leafUrl;
+
+
+    /***
+     * 通过 美团开源的Leaf 生成分布式id  -> 1. 通过db建立的表序列字段， 每次取一段序列用于全局使用，用完再取数据库。
+     *                               -> 2. 通过snowflake算法，通过zookeeper的全局id生成全局id
+     * @param userId
+     * @param orderId
+     * @return
+     */
     @GetMapping("/insert")
     public ResponseEntity<Order> insert(Long userId, Long orderId){
 
 //        Long id = restTemplate.getForObject("http://47.100.206.158:8080/api/segment/get/leaf-segment-test", java.lang.Long.class);
-        Long id = restTemplate.getForObject("http://47.100.206.158:8080/api/snowflake/get/test", java.lang.Long.class);
+        Long id = restTemplate.getForObject(leafUrl, java.lang.Long.class);
         Order order = Order.builder().id(id).userId(userId).orderId(orderId).build();
         int num = orderMapper.insert(order);
         if(num > 0){
@@ -73,6 +86,6 @@ public class TestController {
     @GetMapping("/update/{id}")
     public ResponseEntity updateOrderById(@PathVariable("id") Long id){
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(id);
     }
 }
